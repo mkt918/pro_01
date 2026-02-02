@@ -1,3 +1,4 @@
+console.log('Algorithm Cards App Starting...');
 import './style.css'
 import { Deck } from './Deck.js';
 import { Visualizer } from './Visualizer.js';
@@ -176,6 +177,7 @@ function initAlgorithm() {
 }
 
 function reset() {
+    console.log('Resetting application state...');
     visualizer.reset();
     deck.generateSpades(13);
 

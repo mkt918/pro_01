@@ -3,89 +3,106 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Algorithm Cards</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
-  <div id="app">
-    <header>
-      <h1>Algorithm Cards</h1>
-      <div class="glass-panel" style="margin-top: 1rem; display: inline-block;">
-        <label for="algo-select">アルゴリズムを選択: </label>
-        <select id="algo-select" style="padding: 0.5rem; border-radius: 4px; border: none;">
-          <option value="linear">線形探索 (Linear Search)</option>
-          <option value="binary">二分探索 (Binary Search)</option>
-          <option value="minmax">最大・最小 (Min/Max)</option>
-          <option value="bubble">バブルソート (Bubble Sort)</option>
-          <option value="selection">選択ソート (Selection Sort)</option>
-          <option value="insertion">挿入ソート (Insertion Sort)</option>
+<body class="bg-bg-custom overflow-x-hidden">
+  <div id="app" class="w-full max-w-6xl p-8 flex flex-col gap-8">
+    <header class="text-center">
+      <h1 class="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent italic">
+        Algorithm Cards
+      </h1>
+      <div class="glass-panel mt-4 inline-block py-2 px-4">
+        <label for="algo-select" class="font-medium">アルゴリズムを選択: </label>
+        <select id="algo-select"
+          class="bg-white/10 text-white p-2 rounded focus:outline-none focus:ring-2 ring-primary border-none">
+          <option value="linear" class="bg-gray-800">線形探索 (Linear Search)</option>
+          <option value="binary" class="bg-gray-800">二分探索 (Binary Search)</option>
+          <option value="minmax" class="bg-gray-800">最大・最小 (Min/Max)</option>
+          <option value="bubble" class="bg-gray-800">バブルソート (Bubble Sort)</option>
+          <option value="selection" class="bg-gray-800">選択ソート (Selection Sort)</option>
+          <option value="insertion" class="bg-gray-800">挿入ソート (Insertion Sort)</option>
         </select>
       </div>
     </header>
 
-    <div class="stage glass-panel" id="stage">
-      <div class="arrays-container">
-        <div class="array-row">
-          <div class="array-label">aaa[]</div>
-          <div class="array-slots" id="aaa-container"></div>
+    <div
+      class="stage glass-panel flex flex-col md:flex-row items-center md:items-start justify-center gap-8 min-h-[400px] overflow-x-auto"
+      id="stage">
+      <div class="arrays-container flex flex-col gap-8">
+        <div class="array-row flex items-center gap-4">
+          <div class="array-label font-mono text-xl font-bold w-16 text-right">aaa[]</div>
+          <div class="array-slots flex gap-2" id="aaa-container"></div>
         </div>
 
-        <div class="array-row">
-          <div class="array-label">bbb[]</div>
-          <div class="array-slots" id="bbb-container"></div>
+        <div class="array-row flex items-center gap-4">
+          <div class="array-label font-mono text-xl font-bold w-16 text-right">bbb[]</div>
+          <div class="array-slots flex gap-2" id="bbb-container"></div>
         </div>
       </div>
 
-      <div class="hozon-container">
-        <div class="array-label">hozon</div>
+      <div
+        class="hozon-container flex flex-col items-center gap-4 bg-white/5 p-4 rounded-xl border border-dashed border-white/20 min-w-[120px]">
+        <div class="text-lg font-bold font-mono text-cyan-400">hozon</div>
         <div class="hozon-slot" id="hozon-slot"></div>
       </div>
 
-      <div class="variables-container">
-        <div class="var-box">
-          <div class="var-label">j</div>
+      <div
+        class="variables-container flex flex-col gap-4 bg-cyan-400/5 p-4 rounded-xl border border-white/20 min-w-[100px]">
+        <div class="var-box flex flex-col items-center gap-2">
+          <div class="var-label font-bold font-mono text-xl text-yellow-300">j</div>
           <div class="var-value" id="var-j"></div>
         </div>
-        <div class="var-box">
-          <div class="var-label">k (or i)</div>
+        <div class="var-box flex flex-col items-center gap-2">
+          <div class="var-label font-bold font-mono text-xl text-pink-400">k (or i)</div>
           <div class="var-value" id="var-k"></div>
         </div>
       </div>
     </div>
 
-    <div class="controls glass-panel">
-      <button id="btn-reset">最初から (Reset)</button>
-      <button id="btn-step-back">戻る (Back)</button>
-      <button id="btn-play-pause">再生/停止 (Play/Pause)</button>
-      <button id="btn-step-fwd">進む (Step)</button>
+    <div class="controls glass-panel flex flex-wrap gap-4 justify-center items-center">
+      <button id="btn-reset"
+        class="px-6 py-2 rounded-lg font-bold transition-all bg-gradient-to-br from-gray-600 to-gray-800 hover:scale-105 active:scale-95 shadow-lg">最初から
+        (Reset)</button>
+      <button id="btn-step-back"
+        class="px-6 py-2 rounded-lg font-bold transition-all bg-gradient-to-br from-indigo-500 to-blue-600 hover:scale-105 active:scale-95 shadow-lg">戻る
+        (Back)</button>
+      <button id="btn-play-pause"
+        class="px-6 py-2 rounded-lg font-bold transition-all bg-gradient-to-br from-secondary to-primary hover:scale-105 active:scale-95 shadow-lg">再生/停止
+        (Play/Pause)</button>
+      <button id="btn-step-fwd"
+        class="px-6 py-2 rounded-lg font-bold transition-all bg-gradient-to-br from-green-500 to-emerald-600 hover:scale-105 active:scale-95 shadow-lg">進む
+        (Step)</button>
 
-      <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
-        <label for="speed-range">速さ:</label>
-        <input type="range" id="speed-range" min="1" max="10" value="5">
+      <div class="flex items-center gap-2 ml-4">
+        <label for="speed-range" class="text-sm">速さ:</label>
+        <input type="range" id="speed-range" min="1" max="10" value="5" class="accent-primary cursor-pointer w-24">
       </div>
 
-      <button id="btn-manual-mode" style="margin-left: auto; background: var(--glass-border);">手動モード (Manual)</button>
+      <button id="btn-manual-mode"
+        class="ml-auto px-4 py-2 rounded-lg font-bold border border-white/30 hover:bg-white/10 transition-colors">手動モード
+        (Manual)</button>
     </div>
 
-    <div class="info-panel">
-      <div class="glass-panel explanation" id="explanation">
-        <h3 style="margin-top: 0;">解説 (Explanation)</h3>
-        <p id="msg-text">ここに解説が表示されます。</p>
-        <div id="variable-monitor" style="margin-top: 1rem; font-family: monospace; color: var(--primary-color);">
+    <div class="info-panel grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="glass-panel explanation min-h-[200px]">
+        <h3 class="mt-0 text-xl font-bold text-primary mb-4 border-b border-white/10 pb-2">解説 (Explanation)</h3>
+        <p id="msg-text" class="text-lg leading-relaxed">ここに解説が表示されます。</p>
+        <div id="variable-monitor" class="mt-6 font-mono text-cyan-300 bg-black/20 p-2 rounded border border-white/5">
           i = 0, j = 0
         </div>
       </div>
-      <div class="glass-panel code-view" id="code-view">
-        <!-- Code template will be injected here -->
+      <div class="glass-panel code-view bg-black/40 font-mono text-sm leading-6 max-h-[400px] overflow-y-auto"
+        id="code-view">
         <div class="code-line">function example() {</div>
-        <div class="code-line"> console.log("Hello");</div>
+        <div class="code-line px-4"> console.log("Hello");</div>
         <div class="code-line">}</div>
       </div>
     </div>
   </div>
-  <script type="module" src="./main.js"></script>
+  <script type="module" src="/main.js"></script>
 </body>
 
 </html>

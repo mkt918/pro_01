@@ -20,21 +20,16 @@ export class Visualizer {
     }
 
     setAlgorithm(algorithmFn, ...args) {
-        // algorithmFn should return a generator or an array of steps
-        // Let's assume it returns a generator that yields steps.
-        // We will exhaust the generator immediately to get all steps for rewind capability.
-
         this.reset();
-        // Delay calling algorithmFn until we have the simulation deck ready
         this.steps = [];
 
-        // 1. Create Simulation Deck
+        // 1. Create Simulation Deck (Shallow copy of cards array is enough for swap-based algos)
         const simDeck = [...this.deck.cards];
 
         // 2. Initialize Algorithm with Simulation Deck
         const gen = algorithmFn(simDeck, ...args);
 
-        // 3. Generate Steps
+        // 3. Generate Steps from Generator
         let result = gen.next();
         while (!result.done) {
             this.steps.push(result.value);
@@ -42,37 +37,6 @@ export class Visualizer {
         }
 
         this.steps.push({ type: 'finished', message: '完了 (Finished)' });
-        console.log(`Planned ${this.steps.length} steps.`);
-        // Let's use the "Re-simulation" approach or "Record Commands".
-        // Better: The algorithm yields "Commands" (Swap i,j; Compare i,j).
-        // The Visualizer applies them.
-
-        // To record steps:
-        // We need to run the algorithm on a *clone* of the data first to generate the trace.
-        // Then we play back the trace on the actual DOM.
-
-        const initialCards = [...this.deck.cards]; // array of Card objects
-        // We need a deep clone if we modify props? No, just order in array.
-
-        // Problem: If algorithm modifies 'value' (not search/sort usually), we need deep clone.
-        // Sort just swaps.
-
-        // Let's run the generator against a simulation array.
-        const simDeck = [...this.deck.cards];
-
-        // Use simulation deck for algorithm planning
-        const gen = algorithmFn(simDeck, ...args);
-
-        while (!result.done) {
-            this.steps.push(result.value);
-            // Algorithm internally updates simDeck if it yields swaps, 
-            // so we don't need to manually update simDeck here unless logic dictates.
-            // My algorithms yield 'swap' AND perform the swap on the array they were passed.
-            // So simply passing simDeck to algorithmFn is enough.
-            result = gen.next();
-        }
-        this.steps.push({ type: 'finished', message: '完了 (Finished)' });
-
         console.log(`Planned ${this.steps.length} steps.`);
     }
 
