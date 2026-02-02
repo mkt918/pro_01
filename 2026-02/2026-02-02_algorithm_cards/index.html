@@ -9,15 +9,15 @@
 </head>
 
 <body class="bg-bg-custom overflow-x-hidden">
-  <div id="app" class="w-full max-w-6xl p-8 flex flex-col gap-8">
+  <div id="app" class="w-full max-w-[1400px] p-4 flex flex-col gap-4">
     <header class="text-center">
-      <h1 class="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent italic">
+      <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent italic">
         Algorithm Cards
       </h1>
-      <div class="glass-panel mt-4 inline-block py-2 px-4">
-        <label for="algo-select" class="font-medium">アルゴリズムを選択: </label>
+      <div class="glass-panel mt-2 inline-block py-1 px-4">
+        <label for="algo-select" class="font-medium text-sm">アルゴリズムを選択: </label>
         <select id="algo-select"
-          class="bg-white/10 text-white p-2 rounded focus:outline-none focus:ring-2 ring-primary border-none">
+          class="bg-white/10 text-white p-1 rounded focus:outline-none focus:ring-2 ring-primary border-none text-sm">
           <option value="linear" class="bg-gray-800">線形探索 (Linear Search)</option>
           <option value="binary" class="bg-gray-800">二分探索 (Binary Search)</option>
           <option value="minmax" class="bg-gray-800">最大・最小 (Min/Max)</option>
@@ -29,34 +29,34 @@
     </header>
 
     <div
-      class="stage glass-panel flex flex-col md:flex-row items-center md:items-start justify-center gap-8 min-h-[400px] overflow-x-auto"
+      class="stage glass-panel flex flex-col lg:flex-row items-center lg:items-center justify-center gap-4 min-h-[300px] overflow-x-auto"
       id="stage">
-      <div class="arrays-container flex flex-col gap-8">
-        <div class="array-row flex items-center gap-4">
-          <div class="array-label font-mono text-xl font-bold w-16 text-right">aaa[]</div>
+      <div class="arrays-container flex flex-col gap-4">
+        <div class="array-row flex items-center gap-2">
+          <div class="array-label font-mono text-lg font-bold w-12 text-right">aaa[]</div>
           <div class="array-slots flex gap-2" id="aaa-container"></div>
         </div>
 
-        <div class="array-row flex items-center gap-4">
-          <div class="array-label font-mono text-xl font-bold w-16 text-right">bbb[]</div>
+        <div class="array-row flex items-center gap-2">
+          <div class="array-label font-mono text-lg font-bold w-12 text-right">bbb[]</div>
           <div class="array-slots flex gap-2" id="bbb-container"></div>
         </div>
       </div>
 
       <div
-        class="hozon-container flex flex-col items-center gap-4 bg-white/5 p-4 rounded-xl border border-dashed border-white/20 min-w-[120px]">
-        <div class="text-lg font-bold font-mono text-cyan-400">hozon</div>
+        class="hozon-container flex flex-col items-center gap-2 bg-white/5 p-3 rounded-xl border border-dashed border-white/20 min-w-[100px]">
+        <div class="text-sm font-bold font-mono text-cyan-400">hozon</div>
         <div class="hozon-slot" id="hozon-slot"></div>
       </div>
 
       <div
-        class="variables-container flex flex-col gap-4 bg-cyan-400/5 p-4 rounded-xl border border-white/20 min-w-[100px]">
-        <div class="var-box flex flex-col items-center gap-2">
-          <div class="var-label font-bold font-mono text-xl text-yellow-300">j</div>
+        class="variables-container flex flex-row lg:flex-col gap-4 bg-cyan-400/5 p-3 rounded-xl border border-white/20 min-w-[100px]">
+        <div class="var-box flex flex-col items-center gap-1">
+          <div class="var-label font-bold font-mono text-lg text-yellow-300">j</div>
           <div class="var-value" id="var-j"></div>
         </div>
-        <div class="var-box flex flex-col items-center gap-2">
-          <div class="var-label font-bold font-mono text-xl text-pink-400">k (or i)</div>
+        <div class="var-box flex flex-col items-center gap-1">
+          <div class="var-label font-bold font-mono text-lg text-pink-400">k/i</div>
           <div class="var-value" id="var-k"></div>
         </div>
       </div>

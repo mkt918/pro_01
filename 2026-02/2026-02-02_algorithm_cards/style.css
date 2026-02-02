@@ -21,12 +21,12 @@
   }
 
   .card {
-    @apply w-16 h-24 bg-white/90 rounded-lg text-gray-800 flex flex-col justify-center items-center font-bold shadow-md select-none relative transition-all duration-300 border-2 border-transparent;
-    font-size: 1.6rem;
+    @apply w-[58px] h-[86px] bg-white/90 rounded-lg text-gray-800 flex flex-col justify-center items-center font-bold shadow-md select-none relative transition-all duration-300 border-2 border-transparent;
+    font-size: 1.4rem;
   }
 
   .card .suit {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .card.red {
@@ -55,11 +55,11 @@
   }
 
   .empty-slot {
-    @apply w-16 h-24 bg-black/20 text-white/30 border border-dashed border-white/30 flex justify-center items-center rounded-lg;
+    @apply w-[58px] h-[86px] bg-black/20 text-white/30 border border-dashed border-white/30 flex justify-center items-center rounded-lg;
   }
 
   .hozon-slot {
-    @apply w-16 h-24 border-2 border-dashed border-white/50 rounded-lg flex justify-center items-center;
+    @apply w-[58px] h-[86px] border-2 border-dashed border-white/50 rounded-lg flex justify-center items-center;
   }
 
   .var-value {
