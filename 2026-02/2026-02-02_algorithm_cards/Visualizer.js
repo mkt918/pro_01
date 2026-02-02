@@ -117,8 +117,10 @@ export class Visualizer {
             const prevStep = this.steps[this.currentStepIndex];
             this.applyStep(prevStep, false); // false means 'don't apply logic, just highlight'
         } else {
-            // Clear highlights
-            this.deck.cards.forEach(c => c.removeHighlights());
+            // Clear highlights with null check
+            this.deck.cards.forEach(c => {
+                if (c && c.removeHighlights) c.removeHighlights();
+            });
             this.callbacks.onUpdate({ message: '準備完了 (Ready)', codeLine: null });
         }
     }
@@ -214,6 +216,36 @@ export class Visualizer {
             case 'clear_hozon':
                 this.deck.setHozon(null);
                 break;
+            case 'to_max':
+                {
+                    const { index } = step;
+                    const card = this.deck.cards[index];
+                    this.deck.setMax(card);
+                }
+                break;
+            case 'to_min':
+                {
+                    const { index } = step;
+                    const card = this.deck.cards[index];
+                    this.deck.setMin(card);
+                }
+                break;
+            case 'clear_max':
+                this.deck.setMax(null);
+                break;
+            case 'clear_min':
+                this.deck.setMin(null);
+                break;
+            case 'to_foundAt':
+                {
+                    const { index } = step;
+                    const card = this.deck.cards[index];
+                    this.deck.setFoundAt(card);
+                }
+                break;
+            case 'clear_foundAt':
+                this.deck.setFoundAt(null);
+                break;
         }
     }
 
@@ -231,7 +263,13 @@ export class Visualizer {
             // Since we swapped the content at these positions, swapping them again restores order.
 
             [this.deck.cards[indexA], this.deck.cards[indexB]] = [this.deck.cards[indexB], this.deck.cards[indexA]];
-            this.deck.render(this.deck.cards[0].element.parentNode);
+            // Re-render with null-safe parent access
+            const firstCard = this.deck.cards.find(c => c !== null);
+            if (firstCard && firstCard.element && firstCard.element.parentNode) {
+                this.deck.render(firstCard.element.parentNode);
+            } else {
+                this.deck.render();
+            }
         }
         // Compare/Select/Sorted don't change logic state, only visuals.
     }

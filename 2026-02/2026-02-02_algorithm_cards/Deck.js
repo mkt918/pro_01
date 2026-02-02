@@ -3,8 +3,10 @@ import { Card } from './Card.js';
 export class Deck {
     constructor() {
         this.cards = [];
-        this.bbb = new Array(14).fill(null); // bbb array (1-based, 0-13 empty)
         this.hozon = null; // hozon state
+        this.max = null;   // max state
+        this.min = null;   // min state
+        this.foundAt = null; // search result state
     }
 
     // Generate a random set of N cards
@@ -41,6 +43,11 @@ export class Deck {
         // Append to this.cards starting at index 1
         this.cards = this.cards.concat(tempCards);
 
+        this.hozon = null;
+        this.max = null;
+        this.min = null;
+        this.foundAt = null;
+
         return this.cards;
     }
 
@@ -76,19 +83,6 @@ export class Deck {
         });
         aaaContainer.appendChild(aaaFragment);
 
-        // Render bbb (1-based index 0-13) - Optimized with DocumentFragment
-        const bbbContainer = document.getElementById('bbb-container');
-        if (bbbContainer) {
-            bbbContainer.innerHTML = '';
-            const bbbFragment = document.createDocumentFragment();
-            for (let i = 0; i < 14; i++) { // Fixed 14 size
-                const card = this.bbb && this.bbb[i] ? this.bbb[i] : null;
-                const wrapper = this.createWrapper(card, i, 'bbb');
-                bbbFragment.appendChild(wrapper);
-            }
-            bbbContainer.appendChild(bbbFragment);
-        }
-
         // Render Hozon
         const hozonSlot = document.getElementById('hozon-slot');
         if (hozonSlot) {
@@ -96,8 +90,44 @@ export class Deck {
             this.setupDropZone(hozonSlot, 0, 'hozon'); // 0 index dummy
             if (this.hozon) {
                 const el = this.hozon.createDOMElement();
-                if (this.hozon.isDraggable) el.draggable = true; // Ensure draggable reflected
+                if (this.hozon.isDraggable) el.draggable = true;
                 hozonSlot.appendChild(el);
+            }
+        }
+
+        // Render Max
+        const maxSlot = document.getElementById('max-slot');
+        if (maxSlot) {
+            maxSlot.innerHTML = '';
+            this.setupDropZone(maxSlot, 0, 'max');
+            if (this.max) {
+                const el = this.max.createDOMElement();
+                if (this.max.isDraggable) el.draggable = true;
+                maxSlot.appendChild(el);
+            }
+        }
+
+        // Render Min
+        const minSlot = document.getElementById('min-slot');
+        if (minSlot) {
+            minSlot.innerHTML = '';
+            this.setupDropZone(minSlot, 0, 'min');
+            if (this.min) {
+                const el = this.min.createDOMElement();
+                if (this.min.isDraggable) el.draggable = true;
+                minSlot.appendChild(el);
+            }
+        }
+
+        // Render FoundAt
+        const foundSlot = document.getElementById('found-slot');
+        if (foundSlot) {
+            foundSlot.innerHTML = '';
+            this.setupDropZone(foundSlot, 0, 'foundAt');
+            if (this.foundAt) {
+                const el = this.foundAt.createDOMElement();
+                if (this.foundAt.isDraggable) el.draggable = true;
+                foundSlot.appendChild(el);
             }
         }
     }
@@ -148,59 +178,92 @@ export class Deck {
         // Search aaa
         this.cards.forEach((c, i) => {
             if (c && c.id === cardId) { foundCard = c; sourceLoc = { type: 'aaa', index: i }; }
-        });
-        // Search bbb
-        if (!foundCard) {
-            this.bbb.forEach((c, i) => {
-                if (c && c.id === cardId) { foundCard = c; sourceLoc = { type: 'bbb', index: i }; }
-            });
-        }
-        // Search hozon
-        if (!foundCard && this.hozon && this.hozon.id === cardId) {
-            foundCard = this.hozon; sourceLoc = { type: 'hozon', index: 0 };
-        }
+            // Search hozon
+            if (!foundCard && this.hozon && this.hozon.id === cardId) {
+                foundCard = this.hozon; sourceLoc = { type: 'hozon', index: 0 };
+            }
+            // Search max
+            if (!foundCard && this.max && this.max.id === cardId) {
+                foundCard = this.max; sourceLoc = { type: 'max', index: 0 };
+            }
+            // Search min
+            if (!foundCard && this.min && this.min.id === cardId) {
+                foundCard = this.min; sourceLoc = { type: 'min', index: 0 };
+            }
+            // Search foundAt
+            if (!foundCard && this.foundAt && this.foundAt.id === cardId) {
+                foundCard = this.foundAt; sourceLoc = { type: 'foundAt', index: 0 };
+            }
 
-        if (!foundCard) return;
+            if (!foundCard) return;
 
-        // Validation for aaa/bbb index 0 (Usually blocked or allowed?)
-        // If target is aaa[0] or bbb[0], maybe allow? User said index 1-13.
-        // But let's allow moving anywhere for total freedom in manual mode.
+            // Validation for aaa/bbb index 0 (Usually blocked or allowed?)
+            // If target is aaa[0] or bbb[0], maybe allow? User said index 1-13.
+            // But let's allow moving anywhere for total freedom in manual mode.
 
-        // Remove from source
-        if (sourceLoc.type === 'aaa') this.cards[sourceLoc.index] = null;
-        else if (sourceLoc.type === 'bbb') this.bbb[sourceLoc.index] = null;
-        else if (sourceLoc.type === 'hozon') this.hozon = null;
+            // Remove from source
+            if (sourceLoc.type === 'aaa') this.cards[sourceLoc.index] = null;
+            else if (sourceLoc.type === 'hozon') this.hozon = null;
+            else if (sourceLoc.type === 'max') this.max = null;
+            else if (sourceLoc.type === 'min') this.min = null;
+            else if (sourceLoc.type === 'foundAt') this.foundAt = null;
 
-        // Place in target
-        // If target has card, SWAP? or Overwrite?
-        // Real cards: user puts on top or swaps.
-        // Let's implement Swap for convenience.
-        let existingCard = null;
-        if (targetType === 'aaa') {
-            existingCard = this.cards[targetIndex];
-            this.cards[targetIndex] = foundCard;
-        } else if (targetType === 'bbb') {
-            existingCard = this.bbb[targetIndex];
-            this.bbb[targetIndex] = foundCard;
-        } else if (targetType === 'hozon') {
-            existingCard = this.hozon;
-            this.hozon = foundCard;
-        }
+            // Place in target
+            let existingCard = null;
+            if (targetType === 'aaa') {
+                existingCard = this.cards[targetIndex];
+                this.cards[targetIndex] = foundCard;
+            } else if (targetType === 'hozon') {
+                existingCard = this.hozon;
+                this.hozon = foundCard;
+            } else if (targetType === 'max') {
+                existingCard = this.max;
+                this.max = foundCard;
+            } else if (targetType === 'min') {
+                existingCard = this.min;
+                this.min = foundCard;
+            } else if (targetType === 'foundAt') {
+                existingCard = this.foundAt;
+                this.foundAt = foundCard;
+            }
 
-        // If existing card, move it back to source? (Swap)
-        if (existingCard) {
-            if (sourceLoc.type === 'aaa') this.cards[sourceLoc.index] = existingCard;
-            else if (sourceLoc.type === 'bbb') this.bbb[sourceLoc.index] = existingCard;
-            else if (sourceLoc.type === 'hozon') this.hozon = existingCard;
-        }
+            // If existing card, move it back to source (Swap)
+            if (existingCard) {
+                if (sourceLoc.type === 'aaa') this.cards[sourceLoc.index] = existingCard;
+                else if (sourceLoc.type === 'hozon') this.hozon = existingCard;
+                else if (sourceLoc.type === 'max') this.max = existingCard;
+                else if (sourceLoc.type === 'min') this.min = existingCard;
+                else if (sourceLoc.type === 'foundAt') this.foundAt = existingCard;
+            }
 
+            this.render();
+        }); // This closing brace was misplaced in the instruction, it should close the forEach.
+    } // This closes onDrop method
+
+    // Batch update method for better performance
+    setSlots({ hozon, max, min, foundAt } = {}) {
+        if (hozon !== undefined) this.hozon = hozon;
+        if (max !== undefined) this.max = max;
+        if (min !== undefined) this.min = min;
+        if (foundAt !== undefined) this.foundAt = foundAt;
         this.render();
     }
 
-    // Set hozon method needs update to reflect visual state update
+    // Individual setters for backward compatibility
     setHozon(card) {
-        this.hozon = card; // Update state
-        this.render(); // Re-render whole because setHozon logic now integrated in render
+        this.setSlots({ hozon: card });
+    }
+
+    setMax(card) {
+        this.setSlots({ max: card });
+    }
+
+    setMin(card) {
+        this.setSlots({ min: card });
+    }
+
+    setFoundAt(card) {
+        this.setSlots({ foundAt: card });
     }
     // Enable Manual Mode
     enableManualMode() {
@@ -212,37 +275,5 @@ export class Deck {
     disableManualMode() {
         this.cards.forEach(c => { if (c) c.setDraggable(false); });
         this.render();
-    }
-
-    setupDropZones() {
-        const containers = [
-            ...document.querySelectorAll('#aaa-container .card-wrapper .empty-slot'),
-            ...document.querySelectorAll('#aaa-container .card-wrapper .card'), // Allow dropping on existing cards to swap?
-            // Actually, dropping on a wrapper is better
-            ...document.querySelectorAll('#aaa-container .card-wrapper'),
-            ...document.querySelectorAll('#bbb-container .card-wrapper'),
-            document.getElementById('hozon-slot')
-        ];
-
-        // This is complex. We need persistent listeners or re-attach on render.
-        // Since render clears HTML, we must attach listeners IN render or delegate.
-        // Updating 'render' method to attach listeners if manual mode is active is cleanest.
-    }
-
-    handleDrop(e, targetContainer, index, arrayName) {
-        e.preventDefault();
-        const cardId = e.dataTransfer.getData('text/plain'); // '2' from card-2 (ID)
-        // Find card
-        // We have strict 1-13 ID usually.
-        // We need to find the card object in aaa, bbb, or hozon.
-        // Currently 'aaa' is this.cards (index 0-13).
-        // We don't have persistent 'bbb' array in memory in Deck class efficiently yet, just rendered.
-        // TODO: We need real state for bbb.
-    }
-    // (Actual logic handling might be in Visualizer, but this helps)
-    async swapVisual(indexA, indexB) {
-        // This is for complex animation, for now we might just re-render 
-        // or letting the Visualizer handle the DOM manipulation.
-        // We will leave this empty for now and let Visualizer handle it.
     }
 }

@@ -10,8 +10,10 @@ import { selectionSort } from './algorithms/selectionSort.js';
 import { insertionSort } from './algorithms/insertionSort.js';
 import { codeTemplates } from './codeTemplates.js';
 
+// Constants
+const CARD_COUNT = 13;
+
 // Initialization
-const stage = document.getElementById('stage');
 const deck = new Deck();
 
 // UI Elements
@@ -29,20 +31,10 @@ const visualizer = new Visualizer(deck, {
                 .join(', ');
 
             // Update Visual Variable Boxes
-            // Rules: i = counter, j, k = indices
-
             const valJ = variables.j !== undefined ? variables.j : '';
             const valK = variables.k !== undefined ? variables.k : '';
 
-            // If algorithm uses 'i' as index (old style), we map it to 'k' for display if k is empty?
-            // User wants strict: i for count, j/k for index.
-            // My algorithms currently use 'i' as index in loop `for (let i=...)`.
-            // So I will likely refactor algorithms to use `k` loop or keep `i` loop but display it as `k`?
-            // Better: Refactor algorithms to use `k` for index operations where visually relevant.
-
-            // For now, map 'i' to 'k' if k is not present, assuming 'i' is providing the index context.
-            // But ideally we rewrite algorithms. 
-            // Let's implement the mapping here temporarily.
+            // Map 'i' to 'k' for display if k is not present
             const displayK = valK !== '' ? valK : (variables.i !== undefined ? variables.i : '');
 
             const elJ = document.getElementById('var-j');
@@ -95,7 +87,7 @@ btnManual.addEventListener('click', () => {
 });
 
 // Initial Render
-deck.generateSpades(13);
+deck.generateSpades(CARD_COUNT);
 deck.render(); // No argument needed as it targets #aaa-container internally logic update
 renderCodeTemplate('linear');
 
@@ -140,8 +132,7 @@ speedRange.addEventListener('input', (e) => {
 function initAlgorithm() {
     const algoName = document.getElementById('algo-select').value;
 
-    // Safety check for Binary Search: Ensure sorted
-    // Safety check for Binary Search: Ensure sorted (ignoring index 0 null)
+    // Binary Search requires sorted array
     if (algoName === 'binary') {
         // Sort only 1..N
         const sub = deck.cards.slice(1);
@@ -152,7 +143,7 @@ function initAlgorithm() {
 
     switch (algoName) {
         case 'linear':
-            const targetL = Math.floor(Math.random() * 13) + 1;
+            const targetL = Math.floor(Math.random() * CARD_COUNT) + 1;
             visualizer.setAlgorithm(linearSearch, targetL);
             break;
         case 'binary':
@@ -184,7 +175,7 @@ function initAlgorithm() {
 function reset() {
     console.log('Resetting application state...');
     visualizer.reset();
-    deck.generateSpades(13);
+    deck.generateSpades(CARD_COUNT);
 
     const algoName = document.getElementById('algo-select').value;
     if (algoName === 'binary') {

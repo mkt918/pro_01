@@ -3,7 +3,7 @@ export function* linearSearch(cards, targetValue) {
 
     yield {
         type: 'info',
-        message: `ターゲット「${targetValue}」を探します (Searching for ${targetValue})。インデックス 1 から 13 まで順番に探します。`,
+        message: `ターゲット「${targetValue}」を探します。インデックス 1 から順番に確認します。`,
         variables: { target: targetValue },
         codeLine: 1
     };
@@ -19,11 +19,19 @@ export function* linearSearch(cards, targetValue) {
 
         if (cards[k].value === targetValue) {
             yield {
-                type: 'found',
-                indices: [k],
-                message: `見つけました！ aaa[${k}] = ${targetValue}`,
+                type: 'to_foundAt',
+                index: k,
+                message: `見つけました！ カードを foundAt に移動します。`,
                 variables: { k: k, found: true },
                 codeLine: 3
+            };
+
+            yield {
+                type: 'found',
+                indices: [k],
+                message: `探索完了: aaa[${k}] = ${targetValue}`,
+                variables: { k: k, found: true },
+                codeLine: 4
             };
             return;
         }

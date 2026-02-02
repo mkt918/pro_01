@@ -58,10 +58,17 @@ export class Card {
     // or we can make it look like a real card with top/bottom corners.
     // Let's go with Center Value + Suit for readability for kids.
 
-    div.innerHTML = `
-      <div class="value">${this.getDisplayValue()}</div>
-      <div class="suit">${this.getSuitSymbol()}</div>
-    `;
+    // Create value and suit elements using DOM API
+    const valueDiv = document.createElement('div');
+    valueDiv.className = 'value';
+    valueDiv.textContent = this.getDisplayValue();
+
+    const suitDiv = document.createElement('div');
+    suitDiv.className = 'suit';
+    suitDiv.textContent = this.getSuitSymbol();
+
+    div.appendChild(valueDiv);
+    div.appendChild(suitDiv);
 
     this.element = div;
     return div;
