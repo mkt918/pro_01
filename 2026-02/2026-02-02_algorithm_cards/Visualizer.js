@@ -124,8 +124,10 @@ export class Visualizer {
     }
 
     applyStep(step, applyLogic = true) {
-        // Clear all highlights first
-        this.deck.cards.forEach(c => c.removeHighlights());
+        // Clear all highlights first (with null check for 1-based indexing)
+        this.deck.cards.forEach(c => {
+            if (c && c.removeHighlights) c.removeHighlights();
+        });
 
         // Common info update
         this.callbacks.onUpdate({

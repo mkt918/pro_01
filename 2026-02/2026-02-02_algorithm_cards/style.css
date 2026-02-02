@@ -1,12 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --color-bg-custom: #0f0c29;
-  --color-primary: #00d2ff;
-  --color-secondary: #3a7bd5;
-  --color-accent: #ff0076;
-  --color-sorted-green: #00ff87;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -27,8 +21,12 @@
   }
 
   .card {
-    @apply w-[64px] h-[96px] bg-white/90 rounded-lg text-[#333] flex flex-col justify-center items-center font-bold shadow-md select-none relative transition-all duration-300 border-2 border-transparent;
-    font-size: 1.6rem !important;
+    @apply w-16 h-24 bg-white/90 rounded-lg text-gray-800 flex flex-col justify-center items-center font-bold shadow-md select-none relative transition-all duration-300 border-2 border-transparent;
+    font-size: 1.6rem;
+  }
+
+  .card .suit {
+    font-size: 1.2rem;
   }
 
   .card.red {
@@ -40,7 +38,8 @@
   }
 
   .card.compare {
-    @apply border-[#ff0076] -translate-y-2.5 shadow-[0_0_15px_#ff0076];
+    @apply border-accent -translate-y-2.5;
+    box-shadow: 0 0 15px #ff0076;
   }
 
   .card.swap {
@@ -48,7 +47,7 @@
   }
 
   .card.sorted {
-    @apply border-[#00ff87] bg-[#e0fff0];
+    @apply border-sorted-green bg-green-50;
   }
 
   .card.selected {
@@ -56,19 +55,27 @@
   }
 
   .empty-slot {
-    @apply w-[64px] h-[96px] bg-black/20 text-white/30 border border-dashed border-white/30 flex justify-center items-center rounded-lg;
+    @apply w-16 h-24 bg-black/20 text-white/30 border border-dashed border-white/30 flex justify-center items-center rounded-lg;
   }
 
   .hozon-slot {
-    @apply w-[64px] h-[96px] border-2 border-dashed border-white/50 rounded-lg flex justify-center items-center;
+    @apply w-16 h-24 border-2 border-dashed border-white/50 rounded-lg flex justify-center items-center;
   }
 
   .var-value {
     @apply w-12 h-12 bg-white text-gray-800 rounded-lg flex justify-center items-center text-xl font-bold shadow-lg;
   }
+
+  .index-label {
+    @apply text-xs opacity-70 mb-1;
+  }
 }
 
 /* Custom code highlighting */
+.code-line {
+  @apply px-2 py-1 rounded;
+}
+
 .code-line.active {
   @apply bg-yellow-400/20 text-yellow-300;
 }

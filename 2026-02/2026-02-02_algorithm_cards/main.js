@@ -158,6 +158,11 @@ function initAlgorithm() {
         case 'binary':
             // Pick a random existing card (ignoring index 0 null)
             const validCards = deck.cards.filter(c => c !== null);
+            if (validCards.length === 0) {
+                console.error('No valid cards available for binary search');
+                msgText.textContent = 'エラー: カードがありません';
+                return;
+            }
             const targetB = validCards[Math.floor(Math.random() * validCards.length)].value;
             visualizer.setAlgorithm(binarySearch, targetB);
             break;

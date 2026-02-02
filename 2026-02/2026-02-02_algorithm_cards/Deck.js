@@ -68,21 +68,25 @@ export class Deck {
 
         aaaContainer.innerHTML = '';
 
-        // Render aaa (1-based index 0-13)
+        // Render aaa (1-based index 0-13) - Optimized with DocumentFragment
+        const aaaFragment = document.createDocumentFragment();
         this.cards.forEach((card, index) => {
             const wrapper = this.createWrapper(card, index, 'aaa');
-            aaaContainer.appendChild(wrapper);
+            aaaFragment.appendChild(wrapper);
         });
+        aaaContainer.appendChild(aaaFragment);
 
-        // Render bbb (1-based index 0-13)
+        // Render bbb (1-based index 0-13) - Optimized with DocumentFragment
         const bbbContainer = document.getElementById('bbb-container');
         if (bbbContainer) {
             bbbContainer.innerHTML = '';
+            const bbbFragment = document.createDocumentFragment();
             for (let i = 0; i < 14; i++) { // Fixed 14 size
                 const card = this.bbb && this.bbb[i] ? this.bbb[i] : null;
                 const wrapper = this.createWrapper(card, i, 'bbb');
-                bbbContainer.appendChild(wrapper);
+                bbbFragment.appendChild(wrapper);
             }
+            bbbContainer.appendChild(bbbFragment);
         }
 
         // Render Hozon
