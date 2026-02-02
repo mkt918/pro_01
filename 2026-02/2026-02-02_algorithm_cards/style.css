@@ -1,0 +1,322 @@
+:root {
+  --bg-color: #0f0c29;
+  --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  --text-color: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --primary-color: #00d2ff;
+  --secondary-color: #3a7bd5;
+  --accent-color: #ff0076;
+  /* For highlighting comparison/swaps */
+  --sorted-color: #00ff87;
+
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--text-color);
+  background: var(--bg-color);
+  /* Fallback */
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+#app {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Glassmorphism Containers */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header {
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+button {
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border: none;
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 210, 255, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Stage Area */
+.stage {
+  min-height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Vertically center cards */
+  gap: 1rem;
+  position: relative;
+  overflow-x: auto;
+  padding: 2rem 1rem;
+}
+
+/* Card Styles */
+.card {
+  width: 80px;
+  height: 120px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  position: relative;
+  transition: transform 0.3s ease, background-color 0.3s, border-color 0.3s;
+  border: 2px solid transparent;
+}
+
+.card.red {
+  color: #d00;
+}
+
+.card.black {
+  color: #111;
+}
+
+.card .suit {
+  font-size: 1.5rem;
+}
+
+.card .value {
+  margin-top: 0.2rem;
+}
+
+/* Algorithm State Highlights */
+.card.compare {
+  border-color: var(--accent-color);
+  transform: translateY(-10px);
+  box-shadow: 0 0 15px var(--accent-color);
+}
+
+.card.swap {
+  /* Swapping animation handled via JS transforms mostly, but style helps */
+  background-color: #fff0f5;
+}
+
+.card.sorted {
+  border-color: var(--sorted-color);
+  background-color: #e0fff0;
+}
+
+.card.selected {
+  border-color: yellow;
+  transform: translateY(-15px);
+}
+
+/* Info Panel */
+.info-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.explanation {
+  font-size: 1.1rem;
+}
+
+.code-view {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+}
+
+.code-line.active {
+  background: rgba(255, 255, 0, 0.2);
+  color: #ffeb3b;
+}
+
+/* New Layout Styles */
+.stage {
+  min-height: 400px;
+  display: flex;
+  flex-direction: row;
+  /* Side by side: Arrays | Hozon */
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem;
+  overflow-x: auto;
+}
+
+.arrays-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.array-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.array-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: monospace;
+  width: 60px;
+  text-align: right;
+}
+
+.array-slots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hozon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px dashed var(--glass-border);
+  min-width: 120px;
+}
+
+.hozon-slot {
+  width: 80px;
+  height: 120px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.index-label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.empty-slot {
+  width: 80px;
+  height: 120px;
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  border: 1px dashed rgba(255, 255, 255, 0.3) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.variables-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(0, 255, 255, 0.05);
+  /* Different tint */
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  min-width: 100px;
+}
+
+.var-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.var-label {
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 1.2rem;
+}
+
+.var-value {
+  width: 60px;
+  height: 60px;
+  background: white;
+  color: #333;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
