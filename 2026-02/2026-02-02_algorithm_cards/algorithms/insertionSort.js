@@ -11,7 +11,7 @@ export function* insertionSort(cards) {
     yield {
         type: 'sorted',
         indices: [1],
-        message: `最初の1枚 (aaa[1]) は並んでいると考えるよ。`,
+        message: `最初の1枚 (hairetsu[1]) は並んでいると考えるよ。`,
         variables: {},
         codeLine: 1
     };

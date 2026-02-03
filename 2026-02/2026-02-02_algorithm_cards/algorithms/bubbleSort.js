@@ -40,7 +40,7 @@ export function* bubbleSort(cards) {
         yield {
             type: 'sorted',
             indices: [n - i],
-            message: `これで aaa[${n - i}] のカードは場所が決定！ (確定)`,
+            message: `これで hairetsu[${n - i}] のカードは場所が決定！ (確定)`,
             variables: { i },
             codeLine: 8
         };

@@ -56,7 +56,7 @@ export function* selectionSort(cards) {
         yield {
             type: 'sorted',
             indices: [k],
-            message: `これで aaa[${k}] の場所は決定！ (確定)`,
+            message: `これで hairetsu[${k}] の場所は決定！ (確定)`,
             variables: { k },
             codeLine: 9
         };

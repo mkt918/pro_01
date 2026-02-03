@@ -273,4 +273,9 @@ export class Visualizer {
         }
         // Compare/Select/Sorted don't change logic state, only visuals.
     }
+    highlightCode(lineNum, type) {
+        if (this.callbacks && this.callbacks.highlightCode) {
+            this.callbacks.highlightCode(lineNum, type);
+        }
+    }
 }

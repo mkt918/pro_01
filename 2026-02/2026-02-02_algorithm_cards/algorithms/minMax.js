@@ -32,7 +32,7 @@ export function* findMinMax(cards) {
         yield {
             type: 'compare',
             indices: [k],
-            message: `aaa[${k}] (${cards[k].value}) を見てみよう。最大や最小よりすごいかな？`,
+            message: `hairetsu[${k}] (${cards[k].value}) を見てみよう。最大や最小よりすごいかな？`,
             variables: { k, max: maxValue, min: minValue, current: cards[k].value },
             codeLine: 3 // Loop / Initial check
         };

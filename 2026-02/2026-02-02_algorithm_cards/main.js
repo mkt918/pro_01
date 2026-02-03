@@ -44,18 +44,28 @@ const visualizer = new Visualizer(deck, {
             if (elK) elK.textContent = displayK;
         }
 
-        // Highlight Code Line
-        if (codeLine) {
-            const lines = codeView.querySelectorAll('.code-line');
-            lines.forEach(el => el.classList.remove('active'));
-            if (lines[codeLine - 1]) {
-                lines[codeLine - 1].classList.add('active');
-                lines[codeLine - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        }
+        // Highlight Code Line logic moved to highlightCode callback
     },
     onFinished: () => {
         msgText.textContent += " (完了)";
+    },
+    highlightCode: (codeLine, type) => {
+        if (codeLine) {
+            const lines = codeView.querySelectorAll('.code-line');
+            lines.forEach(el => {
+                el.classList.remove('active', 'compare', 'swap');
+            });
+            if (lines[codeLine - 1]) {
+                const activeLine = lines[codeLine - 1];
+                activeLine.classList.add('active');
+                if (type === 'compare') {
+                    activeLine.classList.add('compare');
+                } else if (type === 'swap') {
+                    activeLine.classList.add('swap');
+                }
+                activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
     }
 });
 
@@ -64,24 +74,34 @@ let isManualMode = false;
 
 btnManual.addEventListener('click', () => {
     isManualMode = !isManualMode;
+    const btnBack = document.getElementById('btn-step-back');
+
     if (isManualMode) {
         btnManual.textContent = "手動モード終了 (Exit Manual)";
         btnManual.style.background = "var(--accent-color)";
         deck.enableManualMode();
-        // Disable alg controls
+
+        // Disable alg controls EXCEPT Undo (Back)
         document.getElementById('btn-play-pause').disabled = true;
         document.getElementById('btn-step-fwd').disabled = true;
-        document.getElementById('btn-step-back').disabled = true;
         document.getElementById('algo-select').disabled = true;
+
+        // Enable Undo button
+        btnBack.disabled = false;
+        btnBack.textContent = "元に戻す (Undo)"; // Optional: Rename for clarity
+
         visualizer.reset(); // Clear visualizer state to avoid conflict
     } else {
         btnManual.textContent = "手動モード (Manual)";
         btnManual.style.background = ""; // Revert to default/CSS
         deck.disableManualMode();
+
         // Enable alg controls
         document.getElementById('btn-play-pause').disabled = false;
         document.getElementById('btn-step-fwd').disabled = false;
         document.getElementById('btn-step-back').disabled = false;
+        btnBack.textContent = "戻る (Back)"; // Revert label
+
         document.getElementById('algo-select').disabled = false;
     }
 });
@@ -132,7 +152,11 @@ document.getElementById('btn-step-fwd').addEventListener('click', () => {
 });
 
 document.getElementById('btn-step-back').addEventListener('click', () => {
-    visualizer.stepBack();
+    if (isManualMode) {
+        deck.undoManualState();
+    } else {
+        visualizer.stepBack();
+    }
 });
 
 document.getElementById('btn-play-pause').addEventListener('click', () => {

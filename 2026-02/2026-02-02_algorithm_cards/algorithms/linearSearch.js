@@ -12,7 +12,7 @@ export function* linearSearch(cards, targetValue) {
         yield {
             type: 'compare',
             indices: [k],
-            message: `aaa[${k}] のカード (${cards[k].value}) はこれかな？`,
+            message: `hairetsu[${k}] のカード (${cards[k].value}) はこれかな？`,
             variables: { k: k, value: cards[k].value, target: targetValue },
             codeLine: 2
         };

@@ -1,7 +1,7 @@
 export const codeTemplates = {
     linear: [
         "1. 探している数字(Target)を決めるよ！",
-        "2. 1番目から順番にカードをめくるよ (aaa[k])",
+        "2. 1番目から順番にカードをめくるよ (hairetsu[k])",
         "3. if (カード == Target) 見つかった！",
         "4. まだなら次へ (繰り返し)",
         "5. 最後まで探したけどなかった..."
@@ -20,12 +20,12 @@ export const codeTemplates = {
     ],
     minmax: [
         "1. 最大・最小を探すよ。まずは最初の1枚に注目！",
-        "2. 暫定の最大(Max)と最小(Min) = aaa[1]",
+        "2. 暫定の最大(Max)と最小(Min) = hairetsu[1]",
         "3. loop k = 2 to N (残りのカードを確認)",
-        "4.   if (aaa[k] > Max) もっと大きい？",
-        "5.     Max = aaa[k] (最大値を更新！)",
-        "6.   else if (aaa[k] < Min) もっと小さい？",
-        "7.     Min = aaa[k] (最小値を更新！)",
+        "4.   if (hairetsu[k] > Max) もっと大きい？",
+        "5.     Max = hairetsu[k] (最大値を更新！)",
+        "6.   else if (hairetsu[k] < Min) もっと小さい？",
+        "7.     Min = hairetsu[k] (最小値を更新！)",
         "8. end loop",
         "9. 終了！最大は Max, 最小は Min だよ"
     ],

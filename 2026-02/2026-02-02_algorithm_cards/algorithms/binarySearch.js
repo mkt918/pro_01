@@ -15,7 +15,7 @@ export function* binarySearch(cards, targetValue) {
         yield {
             type: 'compare',
             indices: [k_low, k_high, k_mid],
-            message: `真ん中のカード aaa[${k_mid}] (${cards[k_mid].value}) を見てみよう。`,
+            message: `真ん中のカード hairetsu[${k_mid}] (${cards[k_mid].value}) を見てみよう。`,
             variables: { k_low, k_high, k_mid, midValue: cards[k_mid].value, target: targetValue },
             codeLine: 3
         };

@@ -198,81 +198,51 @@ export class Deck {
     }
 
     onDrop(cardId, targetType, targetIndex) {
-        // Find Card (Simplistic search across all possible locations)
+        // Find Source Card
         let foundCard = null;
-        let sourceLoc = null; // { type: 'aaa', index: 1 }
 
         // Search aaa
         for (let i = 0; i < this.cards.length; i++) {
             const c = this.cards[i];
             if (c && c.id === cardId) {
                 foundCard = c;
-                sourceLoc = { type: 'aaa', index: i };
                 break;
             }
         }
-
-        // Search hozon
-        if (!foundCard && this.hozon && this.hozon.id === cardId) {
-            foundCard = this.hozon; sourceLoc = { type: 'hozon', index: 0 };
-        }
-        // Search max
-        if (!foundCard && this.max && this.max.id === cardId) {
-            foundCard = this.max; sourceLoc = { type: 'max', index: 0 };
-        }
-        // Search min
-        if (!foundCard && this.min && this.min.id === cardId) {
-            foundCard = this.min; sourceLoc = { type: 'min', index: 0 };
-        }
-        // Search foundAt
-        if (!foundCard && this.foundAt && this.foundAt.id === cardId) {
-            foundCard = this.foundAt; sourceLoc = { type: 'foundAt', index: 0 };
-        }
-        // Search target
-        if (!foundCard && this.target && this.target.id === cardId) {
-            foundCard = this.target; sourceLoc = { type: 'target', index: 0 };
-        }
+        // Search others
+        if (!foundCard && this.hozon && this.hozon.id === cardId) foundCard = this.hozon;
+        if (!foundCard && this.max && this.max.id === cardId) foundCard = this.max;
+        if (!foundCard && this.min && this.min.id === cardId) foundCard = this.min;
+        if (!foundCard && this.foundAt && this.foundAt.id === cardId) foundCard = this.foundAt;
+        if (!foundCard && this.target && this.target.id === cardId) foundCard = this.target;
 
         if (!foundCard) return;
 
-        // Remove from source
-        if (sourceLoc.type === 'aaa') this.cards[sourceLoc.index] = null;
-        else if (sourceLoc.type === 'hozon') this.hozon = null;
-        else if (sourceLoc.type === 'max') this.max = null;
-        else if (sourceLoc.type === 'min') this.min = null;
-        else if (sourceLoc.type === 'foundAt') this.foundAt = null;
-        else if (sourceLoc.type === 'target') this.target = null;
+        // --- COPY LOGIC START ---
 
-        // Place in target
-        let existingCard = null;
+        // 1. Save State for Undo
+        this.saveManualState();
+
+        // 2. Clone the found card (New ID)
+        const newCard = this.cloneCardForCopy(foundCard);
+
+        // 3. Place in target (Overwrite)
+        // No need to remove from source because it's a Copy operation.
+        // No need to swap existing card back, because we overwrite.
+        // Simple!
+
         if (targetType === 'aaa') {
-            existingCard = this.cards[targetIndex];
-            this.cards[targetIndex] = foundCard;
+            this.cards[targetIndex] = newCard;
         } else if (targetType === 'hozon') {
-            existingCard = this.hozon;
-            this.hozon = foundCard;
+            this.hozon = newCard;
         } else if (targetType === 'max') {
-            existingCard = this.max;
-            this.max = foundCard;
+            this.max = newCard;
         } else if (targetType === 'min') {
-            existingCard = this.min;
-            this.min = foundCard;
+            this.min = newCard;
         } else if (targetType === 'foundAt') {
-            existingCard = this.foundAt;
-            this.foundAt = foundCard;
+            this.foundAt = newCard;
         } else if (targetType === 'target') {
-            existingCard = this.target;
-            this.target = foundCard;
-        }
-
-        // If existing card, move it back to source (Swap)
-        if (existingCard) {
-            if (sourceLoc.type === 'aaa') this.cards[sourceLoc.index] = existingCard;
-            else if (sourceLoc.type === 'hozon') this.hozon = existingCard;
-            else if (sourceLoc.type === 'max') this.max = existingCard;
-            else if (sourceLoc.type === 'min') this.min = existingCard;
-            else if (sourceLoc.type === 'foundAt') this.foundAt = existingCard;
-            else if (sourceLoc.type === 'target') this.target = existingCard;
+            this.target = newCard;
         }
 
         this.render();
@@ -325,5 +295,69 @@ export class Deck {
         if (this.foundAt) this.foundAt.setSkin(skinType);
         if (this.target) this.target.setSkin(skinType);
         this.render();
+    }
+
+    // --- Manual Mode Improvements (Undo & Copy) ---
+
+    // Snapshot structure:
+    // { cards: [...values], hozon: val, max: val, min: val, foundAt: val, target: val }
+    // Only storing values/IDs is enough to reconstruct, but since objects have ID/Suit...
+    // Storing deep clones of state data is safer.
+    // Simplifying: Store copies of the Card objects (or null) for each slot.
+
+    saveManualState() {
+        if (!this.manualHistory) this.manualHistory = [];
+
+        // LIMIT History to 5
+        if (this.manualHistory.length >= 5) {
+            this.manualHistory.shift(); // Remove oldest
+        }
+
+        const state = {
+            cards: this.cards.map(c => c ? this.cloneCard(c) : null),
+            hozon: this.hozon ? this.cloneCard(this.hozon) : null,
+            max: this.max ? this.cloneCard(this.max) : null,
+            min: this.min ? this.cloneCard(this.min) : null,
+            foundAt: this.foundAt ? this.cloneCard(this.foundAt) : null,
+            target: this.target ? this.cloneCard(this.target) : null
+        };
+        this.manualHistory.push(state);
+    }
+
+    undoManualState() {
+        if (!this.manualHistory || this.manualHistory.length === 0) return;
+
+        const state = this.manualHistory.pop();
+        if (!state) return;
+
+        this.cards = state.cards;
+        this.hozon = state.hozon;
+        this.max = state.max;
+        this.min = state.min;
+        this.foundAt = state.foundAt;
+        this.target = state.target;
+
+        this.render();
+    }
+
+    cloneCard(card) {
+        // Return a new Card instance with same properties
+        // IMPORTANT: We might want a NEW unique ID for true visual independence,
+        // BUT for 'Snapshot' restore, we want the EXACT SAME ID to look like the same card coming back.
+        // So for Undo: Keep ID.
+        // For Copy-Drag: Generate New ID.
+        const newC = new Card(card.suit, card.value, card.id);
+        newC.setSkin(this.skin);
+        newC.setDraggable(true); // Ensure draggable if restoring in manual mode
+        return newC;
+    }
+
+    cloneCardForCopy(card) {
+        // For drag-copy operation: New ID to avoid conflict
+        const newId = Math.floor(Math.random() * 1000000);
+        const newC = new Card(card.suit, card.value, newId);
+        newC.setSkin(this.skin);
+        newC.setDraggable(true);
+        return newC;
     }
 }
