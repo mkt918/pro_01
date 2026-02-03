@@ -10,6 +10,7 @@ export class Deck {
         this.foundAt = null; // search result state
         this.target = null; // target card state
         this.skin = 'trump';
+        this.isManualMode = false;
     }
 
     // Generate a random set of N cards
@@ -58,8 +59,13 @@ export class Deck {
         this.foundAt = null;
         this.target = null;
 
-        // Apply current skin to new cards
-        this.cards.forEach(c => { if (c) c.setSkin(this.skin); });
+        // Apply current skin to new cards and respect manual mode
+        this.cards.forEach(c => {
+            if (c) {
+                c.setSkin(this.skin);
+                if (this.isManualMode) c.setDraggable(true);
+            }
+        });
 
         return this.cards;
     }
@@ -275,12 +281,14 @@ export class Deck {
     }
     // Enable Manual Mode
     enableManualMode() {
+        this.isManualMode = true;
         this.cards.forEach(c => { if (c) c.setDraggable(true); });
         // this.setupDropZones(); // No longer needed, drop zones are set up during render
         this.render(); // Re-render to attach drag events
     }
 
     disableManualMode() {
+        this.isManualMode = false;
         this.cards.forEach(c => { if (c) c.setDraggable(false); });
         this.render();
     }
