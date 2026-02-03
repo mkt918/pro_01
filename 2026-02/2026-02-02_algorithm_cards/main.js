@@ -85,6 +85,9 @@ document.getElementById('algo-select').addEventListener('change', (e) => {
     if (selected === 'manual') {
         enableManualModeUI();
     } else {
+        if (selected === 'binary') {
+            document.getElementById('target-value').value = 2;
+        }
         disableManualModeUI(); // Switch to auto mode UI
         renderCodeTemplate(selected);
         reset(); // Re-run reset logic for algorithm setup
