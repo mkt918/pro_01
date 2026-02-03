@@ -3,7 +3,7 @@ export function* linearSearch(cards, targetValue) {
 
     yield {
         type: 'info',
-        message: `探している数字「${targetValue}」を決めたよ。左から順番に見ていこう！`,
+        message: `探したい数字を「target」という名前に決めたよ。まずは target に ${targetValue} を覚えさせよう。`,
         variables: { target: targetValue },
         codeLine: 1
     };
@@ -12,7 +12,7 @@ export function* linearSearch(cards, targetValue) {
         yield {
             type: 'compare',
             indices: [k],
-            message: `hairetsu[${k}] のカード (${cards[k].value}) はこれかな？`,
+            message: `「k」は今チェックしている番号だよ。今は hairetsu[${k}] のカードを見てみよう。`,
             variables: { k: k, value: cards[k].value, target: targetValue },
             codeLine: 2
         };
@@ -21,17 +21,17 @@ export function* linearSearch(cards, targetValue) {
             yield {
                 type: 'to_foundAt',
                 index: k,
-                message: `あった！見つけたよ！`,
+                message: `target と同じ数字が見つかった！「foundAt」という箱に、見つけた場所「${k}」を記録するよ。`,
                 variables: { k: k, found: true },
-                codeLine: 3
+                codeLine: 4
             };
 
             yield {
                 type: 'found',
                 indices: [k],
-                message: `探していた ${targetValue} を見つけました！`,
+                message: `これで探索終了！ ${targetValue} は ${k} 番目にあることがわかったね。`,
                 variables: { k: k, found: true },
-                codeLine: 3
+                codeLine: 4
             };
             return;
         }
@@ -39,8 +39,8 @@ export function* linearSearch(cards, targetValue) {
 
     yield {
         type: 'info',
-        message: `最後まで探したけど、見つからなかったね...`,
+        message: `「k」が 13 まで進んだけど見つからなかったね。target はここには無いみたいだ。`,
         variables: { found: false },
-        codeLine: 5
+        codeLine: 7
     };
 }

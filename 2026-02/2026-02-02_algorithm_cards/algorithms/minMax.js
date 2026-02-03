@@ -7,7 +7,7 @@ export function* findMinMax(cards) {
 
     yield {
         type: 'info',
-        message: `最大値と最小値を同時に探すよ。まずは最初の1枚に注目！`,
+        message: `最大値と最小値を同時に探すよ。まずは最初の1枚に注目しよう！`,
         variables: { max: maxValue, min: minValue },
         codeLine: 1
     };
@@ -15,26 +15,26 @@ export function* findMinMax(cards) {
     yield {
         type: 'to_max',
         index: 1,
-        message: `とりあえず、これを最大値 (Max) にしておこう。`,
+        message: `今のところ hairetsu[1] が一番大きいとして「Max」という箱に ${maxValue} を入れておくね。`,
         variables: { max: maxValue, min: minValue },
-        codeLine: 2
+        codeLine: 1
     };
 
     yield {
         type: 'to_min',
         index: 1,
-        message: `最小値 (Min) もこれにしておくね。`,
+        message: `同じように「Min」という箱にも ${minValue} を入れておくよ。これが基準になるよ。`,
         variables: { max: maxValue, min: minValue },
-        codeLine: 2
+        codeLine: 1
     };
 
     for (let k = 2; k <= n; k++) {
         yield {
             type: 'compare',
             indices: [k],
-            message: `hairetsu[${k}] (${cards[k].value}) を見てみよう。最大や最小よりすごいかな？`,
+            message: `次のカード hairetsu[${k}] (${cards[k].value}) を見ていくよ。これは今の「Max」より大きいかな？それとも「Min」より小さいかな？`,
             variables: { k, max: maxValue, min: minValue, current: cards[k].value },
-            codeLine: 3 // Loop / Initial check
+            codeLine: 2
         };
         // Also highlight comparison? Maybe 4 inside?
         // Let's stick to 3 for loop Start, and if specific logic hits, highlight specific line.
@@ -43,9 +43,9 @@ export function* findMinMax(cards) {
             // Check Max
             yield {
                 type: 'info',
-                message: `${cards[k].value} は今の最大 (${maxValue}) より大きいね！`,
+                message: `今の最大値 ${maxValue} を超える ${cards[k].value} が見つかったよ！`,
                 variables: { k, max: maxValue },
-                codeLine: 4
+                codeLine: 3
             };
 
             maxValue = cards[k].value;
@@ -53,9 +53,9 @@ export function* findMinMax(cards) {
             yield {
                 type: 'to_max',
                 index: k,
-                message: `最大値を更新！新しい Max = ${maxValue}`,
+                message: `「Max」の箱を新しい数字 ${maxValue} で書き換えよう。`,
                 variables: { k, max: maxValue, min: minValue },
-                codeLine: 5
+                codeLine: 4
             };
         } else if (cards[k].value < minValue) {
             // Check Min
@@ -63,9 +63,9 @@ export function* findMinMax(cards) {
             // If > Max, it can't be < Min (unless start, but logic holds).
             yield {
                 type: 'info',
-                message: `${cards[k].value} は今の最小 (${minValue}) より小さいね！`,
+                message: `今の最小値 ${minValue} よりも小さい ${cards[k].value} が見つかったよ！`,
                 variables: { k, min: minValue },
-                codeLine: 6
+                codeLine: 5
             };
 
             minValue = cards[k].value;
@@ -73,17 +73,17 @@ export function* findMinMax(cards) {
             yield {
                 type: 'to_min',
                 index: k,
-                message: `最小値を更新！新しい Min = ${minValue}`,
+                message: `「Min」の箱を新しい数字 ${minValue} で書き換えよう。`,
                 variables: { k, max: maxValue, min: minValue },
-                codeLine: 7
+                codeLine: 6
             };
         }
     }
 
     yield {
         type: 'info',
-        message: `全部見終わったよ！最大は ${maxValue}、最小は ${minValue} だね。`,
+        message: `全てのカードをチェックし終わったよ！「Max」に入っている ${maxValue} が最大、「Min」の ${minValue} が最小だね。`,
         variables: { max: maxValue, min: minValue },
-        codeLine: 9
+        codeLine: 1
     };
 }

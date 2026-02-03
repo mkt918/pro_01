@@ -3,7 +3,7 @@ export function* selectionSort(cards) {
 
     yield {
         type: 'info',
-        message: `選択ソートはじめるよ。一番小さい数字を探して、左から順番に並べていくね。`,
+        message: `選択ソート開始！一番小さい数字を見つけて、左（hairetsu[k]）から順に埋めていくよ。`,
         variables: { n },
         codeLine: 1
     };
@@ -15,17 +15,17 @@ export function* selectionSort(cards) {
         yield {
             type: 'select',
             indices: [minIdx],
-            message: `まずはこのカード (${cards[minIdx].value}) を「暫定の最小」として覚えておくよ。`,
-            variables: { k, minIdx },
-            codeLine: 3
+            message: `「k」は今から確定させたい場所だよ。まずは「minIndex」という箱に ${k} を入れて、暫定最小とするね。`,
+            variables: { k, minIndex: minIdx },
+            codeLine: 2
         };
 
         for (let j = k + 1; j <= n; j++) {
             yield {
                 type: 'compare',
                 indices: [minIdx, j],
-                message: `暫定の最小 (${cards[minIdx].value}) と、このカード (${cards[j].value}) を比べるよ。`,
-                variables: { minIdx, j },
+                message: `もっと小さいカードがないか「j」を使って探すよ。今の最小 (hairetsu[minIndex]) と hairetsu[j] を比べるね。`,
+                variables: { k, minIndex: minIdx, j },
                 codeLine: 4
             };
 
@@ -34,9 +34,9 @@ export function* selectionSort(cards) {
                 yield {
                     type: 'select',
                     indices: [minIdx],
-                    message: `もっと小さい数字 (${cards[minIdx].value}) を発見！こっちを新しい最小として覚えるね。`,
-                    variables: { minIdx, newMin: cards[minIdx].value },
-                    codeLine: 6
+                    message: `もっと小さいカード ${cards[minIdx].value} を見つけたよ！「minIndex」を ${j} に書き換えて覚えなおそう。`,
+                    variables: { k, minIndex: minIdx },
+                    codeLine: 5
                 };
             }
         }
@@ -46,8 +46,8 @@ export function* selectionSort(cards) {
                 type: 'swap',
                 indexA: k,
                 indexB: minIdx,
-                message: `見つけた一番小さい数字 (${cards[minIdx].value}) を、左のカードと入れ替えるよ (交換)`,
-                variables: { k, minIdx },
+                message: `一番小さかった hairetsu[${minIdx}] と、今の場所 [${k}] をSWAP（入れ替え）て確定させるよ。`,
+                variables: { k, minIndex: minIdx },
                 codeLine: 8
             };
             [cards[k], cards[minIdx]] = [cards[minIdx], cards[k]];
@@ -56,7 +56,7 @@ export function* selectionSort(cards) {
         yield {
             type: 'sorted',
             indices: [k],
-            message: `これで hairetsu[${k}] の場所は決定！ (確定)`,
+            message: `これで hairetsu[${k}] の場所が最小のカードで決まったね。`,
             variables: { k },
             codeLine: 9
         };
@@ -65,8 +65,8 @@ export function* selectionSort(cards) {
     yield {
         type: 'sorted',
         indices: Array.from({ length: n }, (_, i) => i + 1),
-        message: `全部の並び替えが終わったよ！ (完了)`,
+        message: `全部のカードが正しい順番に並んだよ！`,
         variables: {},
-        codeLine: 10
+        codeLine: 1
     };
 }

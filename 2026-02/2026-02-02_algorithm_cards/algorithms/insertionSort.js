@@ -3,7 +3,7 @@ export function* insertionSort(cards) {
 
     yield {
         type: 'info',
-        message: `挿入ソートをはじめるよ。左から順番にきれいに並べていくね。`,
+        message: `挿入ソートを開始！左から順番に「整列済みの列」を広げていくアルゴリズムだよ。`,
         variables: { n },
         codeLine: 1
     };
@@ -11,7 +11,7 @@ export function* insertionSort(cards) {
     yield {
         type: 'sorted',
         indices: [1],
-        message: `最初の1枚 (hairetsu[1]) は並んでいると考えるよ。`,
+        message: `まず1番目のカードは「最初から整列済み」とみなすよ。ここを基準に始めよう。`,
         variables: {},
         codeLine: 1
     };
@@ -25,27 +25,27 @@ export function* insertionSort(cards) {
             type: 'to_hozon',
             index: k,
             value: key.value,
-            message: `このカード (${key.value}) を整列させたいから、一旦手元 (hozon) に持っておくね。`,
+            message: `「k」は今から並べたいカードの番号だよ。場所を探す間、邪魔にならないよう「hozon」という一時的な箱（手元）に ${key.value} を退避させるね。`,
             variables: { k, hozon: key.value },
-            codeLine: 3
+            codeLine: 2
         };
 
         while (j >= 1 && cards[j].value > key.value) {
             yield {
                 type: 'compare',
                 indices: [j, j + 1], // j+1 is effectively 'hole' or current compare spot
-                message: `左のカード (${cards[j].value}) と 手元のカード (${key.value}) を比べるよ。左が大きい？`,
+                message: `「j」を使って、左側にある整列済みのカードと比べていくよ。左のカード (${cards[j].value}) は手元 (${key.value}) より大きいかな？`,
                 variables: { j, hozon: key.value },
-                codeLine: 5
+                codeLine: 4
             };
 
             yield {
                 type: 'swap',
                 indexA: j,
                 indexB: j + 1,
-                message: `左のほうが大きいね！右にずれてもらおう。`,
+                message: `左のカードのほうが大きいね！これでは手元のカードを入れられないから、左のカードを右に1つずらして「空き場所」を作るよ。`,
                 variables: { j, jNext: j + 1 },
-                codeLine: 6
+                codeLine: 5
             };
 
             [cards[j], cards[j + 1]] = [cards[j + 1], cards[j]];
@@ -55,7 +55,7 @@ export function* insertionSort(cards) {
         yield {
             type: 'from_hozon',
             index: j + 1,
-            message: `ここなら入るね！手元のカード (${key.value}) を戻そう (挿入)`,
+            message: `これ以上左には大きいカードがないね。空いた場所（hairetsu[${j + 1}]）に、hozon からカードを戻して挿入完了！`,
             variables: { j: j + 1, hozon: key.value },
             codeLine: 9
         };
@@ -64,7 +64,7 @@ export function* insertionSort(cards) {
         yield {
             type: 'sorted',
             indices: sortedIndices,
-            message: `ここまで (aaa[1]～aaa[${k}]) はきれいに並んだよ！`,
+            message: `これで「k」番目までのカードが正しい順番に並んだことになるよ。`,
             variables: { k },
             codeLine: 10
         };
@@ -80,8 +80,8 @@ export function* insertionSort(cards) {
     yield {
         type: 'sorted',
         indices: Array.from({ length: n }, (_, i) => i + 1),
-        message: `全部の並び替えが終わったよ！ (完了)`,
+        message: `全てのカードの挿入が終わり、完璧に並べ替えできたよ！`,
         variables: {},
-        codeLine: 11
+        codeLine: 1
     };
 }

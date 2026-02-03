@@ -3,7 +3,7 @@ export function* bubbleSort(cards) {
 
     yield {
         type: 'info',
-        message: `バブルソートをはじめよう！カードの枚数は ${n} 枚だね。`,
+        message: `バブルソートをはじめよう！カードの枚数13枚に対して、最大12回繰り返して並べ替えていくよ。`,
         variables: { n },
         codeLine: 1
     };
@@ -17,9 +17,9 @@ export function* bubbleSort(cards) {
             yield {
                 type: 'compare',
                 indices: [j, j + 1],
-                message: `左 (${cards[j].value}) と 右 (${cards[j + 1].value}) を比べるよ。左のほうが大きいかな？`,
-                variables: { i, j, next: j + 1 },
-                codeLine: 4
+                message: `「j」は今見ている場所だよ。hairetsu[${j}] と隣の [${j + 1}] を比べて、左が大きければ右へ流していくよ。`,
+                variables: { i: i + 1, j, next: j + 1 },
+                codeLine: 3
             };
 
             if (cards[j].value > cards[j + 1].value) {
@@ -27,9 +27,9 @@ export function* bubbleSort(cards) {
                     type: 'swap',
                     indexA: j,
                     indexB: j + 1,
-                    message: `左のほうが大きいね！場所を入れ替えるよ (交換)`,
-                    variables: { i, j, next: j + 1 },
-                    codeLine: 5
+                    message: `左のほうが大きいので、SWAP（入れ替え）を行うよ。大きい数字が右側に移動したね。`,
+                    variables: { i: i + 1, j, next: j + 1 },
+                    codeLine: 4
                 };
 
                 [cards[j], cards[j + 1]] = [cards[j + 1], cards[j]];
@@ -40,9 +40,9 @@ export function* bubbleSort(cards) {
         yield {
             type: 'sorted',
             indices: [n - i],
-            message: `これで hairetsu[${n - i}] のカードは場所が決定！ (確定)`,
-            variables: { i },
-            codeLine: 8
+            message: `一番右端まで大きい数字が運ばれたね。これで hairetsu[${n - i}] の場所が確定したよ。`,
+            variables: { i: i + 1 },
+            codeLine: 1
         };
 
         if (!swapped) break;
@@ -51,8 +51,8 @@ export function* bubbleSort(cards) {
     yield {
         type: 'sorted',
         indices: Array.from({ length: n }, (_, idx) => idx + 1),
-        message: `全部の並び替えが終わったよ！ (完了)`,
+        message: `全てのカードの並び替えが完了したよ！`,
         variables: {},
-        codeLine: 9
+        codeLine: 1
     };
 }
