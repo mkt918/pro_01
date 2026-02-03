@@ -2,10 +2,17 @@ export class Card {
   constructor(suit, value, id) {
     this.suit = suit; // 'spades', 'hearts', 'diamonds', 'clubs'
     this.value = value; // 1-13
-    this.id = id; // Unique ID for tracking DOM elements
-
-    this.element = null;
+    this.id = id;
     this.isDraggable = false;
+    this.element = null;
+    this.skin = 'trump'; // 'trump' (default) or 'image'
+  }
+
+  setSkin(skin) {
+    this.skin = skin;
+    if (this.element) {
+      this.updateDisplay();
+    }
   }
 
   getSuitSymbol() {
@@ -54,24 +61,38 @@ export class Card {
       });
     }
 
-    // Simplified layout: Just Value and Suit centered for now, 
-    // or we can make it look like a real card with top/bottom corners.
-    // Let's go with Center Value + Suit for readability for kids.
-
-    // Create value and suit elements using DOM API
-    const valueDiv = document.createElement('div');
-    valueDiv.className = 'value';
-    valueDiv.textContent = this.getDisplayValue();
-
-    const suitDiv = document.createElement('div');
-    suitDiv.className = 'suit';
-    suitDiv.textContent = this.getSuitSymbol();
-
-    div.appendChild(valueDiv);
-    div.appendChild(suitDiv);
+    this.updateDisplay();
 
     this.element = div;
     return div;
+  }
+
+  updateDisplay() {
+    if (!this.element) return;
+    this.element.innerHTML = '';
+
+    if (this.skin === 'image') {
+      const img = document.createElement('img');
+      const filename = String(this.value).padStart(3, '0');
+      img.src = `img/${filename}.png`;
+      img.className = 'w-full h-full object-contain rounded';
+      this.element.appendChild(img);
+      this.element.classList.add('skin-image');
+      this.element.classList.remove('trump-skin');
+    } else {
+      const valueDiv = document.createElement('div');
+      valueDiv.className = 'value';
+      valueDiv.textContent = this.getDisplayValue();
+
+      const suitDiv = document.createElement('div');
+      suitDiv.className = 'suit';
+      suitDiv.textContent = this.getSuitSymbol();
+
+      this.element.appendChild(valueDiv);
+      this.element.appendChild(suitDiv);
+      this.element.classList.add('trump-skin');
+      this.element.classList.remove('skin-image');
+    }
   }
 
   highlight(type) {

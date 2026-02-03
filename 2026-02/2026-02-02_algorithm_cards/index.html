@@ -14,17 +14,32 @@
       <h1 class="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent italic">
         Algorithm Cards
       </h1>
-      <div class="glass-panel mt-2 inline-block py-1 px-4">
-        <label for="algo-select" class="font-medium text-sm">アルゴリズムを選択: </label>
-        <select id="algo-select"
-          class="bg-white/10 text-white p-1 rounded focus:outline-none focus:ring-2 ring-primary border-none text-sm">
-          <option value="linear" class="bg-gray-800">線形探索 (Linear Search)</option>
-          <option value="binary" class="bg-gray-800">二分探索 (Binary Search)</option>
-          <option value="minmax" class="bg-gray-800">最大・最小 (Min/Max)</option>
-          <option value="bubble" class="bg-gray-800">バブルソート (Bubble Sort)</option>
-          <option value="selection" class="bg-gray-800">選択ソート (Selection Sort)</option>
-          <option value="insertion" class="bg-gray-800">挿入ソート (Insertion Sort)</option>
-        </select>
+      <div class="glass-panel mt-2 inline-block py-1 px-4 flex items-center gap-4">
+        <div>
+          <label for="algo-select" class="font-medium text-sm">アルゴリズムを選択: </label>
+          <select id="algo-select"
+            class="bg-white/10 text-white p-1 rounded focus:outline-none focus:ring-2 ring-primary border-none text-sm">
+            <option value="linear" class="bg-gray-800">線形探索 (Linear Search)</option>
+            <option value="binary" class="bg-gray-800">二分探索 (Binary Search)</option>
+            <option value="minmax" class="bg-gray-800">最大・最小 (Min/Max)</option>
+            <option value="bubble" class="bg-gray-800">バブルソート (Bubble Sort)</option>
+            <option value="selection" class="bg-gray-800">選択ソート (Selection Sort)</option>
+            <option value="insertion" class="bg-gray-800">挿入ソート (Insertion Sort)</option>
+          </select>
+        </div>
+        <div id="target-input-container" class="hidden flex items-center gap-2 border-l border-white/20 pl-4">
+          <label for="target-value" class="font-medium text-sm text-yellow-300">Target (1-13): </label>
+          <input type="number" id="target-value" min="1" max="13" value="7"
+            class="bg-white/10 text-white p-1 w-16 text-center rounded focus:outline-none focus:ring-2 ring-yellow-300 border-none text-sm font-mono">
+        </div>
+        <div class="flex items-center gap-2 border-l border-white/20 pl-4">
+          <label for="skin-select" class="font-medium text-sm text-blue-300">Skin: </label>
+          <select id="skin-select"
+            class="bg-white/10 text-white p-1 rounded focus:outline-none focus:ring-2 ring-blue-300 border-none text-sm">
+            <option value="trump" class="bg-gray-800">Trump (Original)</option>
+            <option value="image" class="bg-gray-800">Image (001-013)</option>
+          </select>
+        </div>
       </div>
     </header>
 
@@ -49,6 +64,12 @@
           class="found-container flex flex-col items-center gap-2 bg-emerald-400/5 p-3 rounded-xl border border-dashed border-emerald-400/20 min-w-[100px]">
           <div class="text-sm font-bold font-mono text-emerald-400">foundAt</div>
           <div class="hozon-slot" id="found-slot"></div>
+        </div>
+
+        <div
+          class="target-container flex flex-col items-center gap-2 bg-yellow-400/5 p-3 rounded-xl border border-dashed border-yellow-400/20 min-w-[100px]">
+          <div class="text-sm font-bold font-mono text-yellow-400">Target</div>
+          <div class="hozon-slot" id="target-slot"></div>
         </div>
 
         <div class="flex flex-col gap-2">

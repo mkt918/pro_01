@@ -95,7 +95,30 @@ renderCodeTemplate('linear');
 document.getElementById('algo-select').addEventListener('change', (e) => {
     reset();
     renderCodeTemplate(e.target.value);
+    // Update basic visibility without reset if possible? No, reset ensures clean state.
+    // Actually, visibility is toggled inside initAlgorithm or reset?
+    // Let's call reset which calls initAlgorithm logic or at least UI update?
+    // reset() currently doesn't hide/show inputs. 
+    // Let's move visibility toggle to a UI update function.
+    updateUIControls();
 });
+
+document.getElementById('target-value').addEventListener('change', () => {
+});
+
+document.getElementById('skin-select').addEventListener('change', (e) => {
+    deck.setSkin(e.target.value);
+});
+
+function updateUIControls() {
+    const algoName = document.getElementById('algo-select').value;
+    const targetInputContainer = document.getElementById('target-input-container');
+    if (algoName === 'linear' || algoName === 'binary') {
+        targetInputContainer.classList.remove('hidden');
+    } else {
+        targetInputContainer.classList.add('hidden');
+    }
+}
 
 document.getElementById('btn-reset').addEventListener('click', () => {
     reset();
@@ -124,13 +147,17 @@ document.getElementById('btn-play-pause').addEventListener('click', () => {
     }
 });
 
-const speedRange = document.getElementById('speed-range');
-speedRange.addEventListener('input', (e) => {
-    visualizer.setSpeed(parseInt(e.target.value));
-});
-
 function initAlgorithm() {
     const algoName = document.getElementById('algo-select').value;
+    const targetInputContainer = document.getElementById('target-input-container');
+    const targetInput = document.getElementById('target-value');
+
+    // Toggle Target Input Visibility
+    if (algoName === 'linear' || algoName === 'binary') {
+        targetInputContainer.classList.remove('hidden');
+    } else {
+        targetInputContainer.classList.add('hidden');
+    }
 
     // Binary Search requires sorted array
     if (algoName === 'binary') {
@@ -143,19 +170,33 @@ function initAlgorithm() {
 
     switch (algoName) {
         case 'linear':
-            const targetL = Math.floor(Math.random() * CARD_COUNT) + 1;
-            visualizer.setAlgorithm(linearSearch, targetL);
+            {
+                // User input or defaults
+                let val = parseInt(targetInput.value);
+                if (isNaN(val) || val < 1 || val > 13) val = Math.floor(Math.random() * CARD_COUNT) + 1;
+                targetInput.value = val; // Update UI if corrected
+
+                // Create Target Card Visual
+                deck.setSlots({ target: deck.createCard('spades', val, 999) });
+
+                visualizer.setAlgorithm(linearSearch, val);
+            }
             break;
         case 'binary':
-            // Pick a random existing card (ignoring index 0 null)
-            const validCards = deck.cards.filter(c => c !== null);
-            if (validCards.length === 0) {
-                console.error('No valid cards available for binary search');
-                msgText.textContent = 'エラー: カードがありません';
-                return;
+            {
+                // User input or defaults
+                let val = parseInt(targetInput.value);
+                if (isNaN(val) || val < 1 || val > 13) val = Math.floor(Math.random() * CARD_COUNT) + 1;
+                targetInput.value = val;
+
+                // Create Target Card Visual
+                deck.setSlots({ target: deck.createCard('spades', val, 999) });
+
+                // Ensure valid cards exist? Binary search can search for missing values too!
+                // So we don't strictly need the value to exist in the deck.
+
+                visualizer.setAlgorithm(binarySearch, val);
             }
-            const targetB = validCards[Math.floor(Math.random() * validCards.length)].value;
-            visualizer.setAlgorithm(binarySearch, targetB);
             break;
         case 'minmax':
             visualizer.setAlgorithm(findMinMax);
@@ -191,6 +232,10 @@ function reset() {
 
     const lines = codeView.querySelectorAll('.code-line');
     lines.forEach(el => el.classList.remove('active'));
+
+    updateUIControls();
+    // Also clear Target slot
+    deck.setSlots({ target: null });
 }
 
 function renderCodeTemplate(algoName) {
