@@ -3,7 +3,7 @@ export function* insertionSort(cards) {
 
     yield {
         type: 'info',
-        message: `挿入ソート (1-based)。左から順に整列させていきます。`,
+        message: `挿入ソートをはじめるよ。左から順番にきれいに並べていくね。`,
         variables: { n },
         codeLine: 1
     };
@@ -11,9 +11,9 @@ export function* insertionSort(cards) {
     yield {
         type: 'sorted',
         indices: [1],
-        message: `aaa[1] はソート済みとします`,
+        message: `最初の1枚 (aaa[1]) は並んでいると考えるよ。`,
         variables: {},
-        codeLine: 3
+        codeLine: 1
     };
 
     // Use k for outer loop (current element to insert)
@@ -25,27 +25,27 @@ export function* insertionSort(cards) {
             type: 'to_hozon',
             index: k,
             value: key.value,
-            message: `hozon = aaa[${k}] (${key.value}) を退避`,
+            message: `このカード (${key.value}) を整列させたいから、一旦手元 (hozon) に持っておくね。`,
             variables: { k, hozon: key.value },
-            codeLine: 6
+            codeLine: 3
         };
 
         while (j >= 1 && cards[j].value > key.value) {
             yield {
                 type: 'compare',
                 indices: [j, j + 1], // j+1 is effectively 'hole' or current compare spot
-                message: `比較: aaa[${j}](${cards[j].value}) > hozon(${key.value}) ?`,
+                message: `左のカード (${cards[j].value}) と 手元のカード (${key.value}) を比べるよ。左が大きい？`,
                 variables: { j, hozon: key.value },
-                codeLine: 10
+                codeLine: 5
             };
 
             yield {
                 type: 'swap',
                 indexA: j,
                 indexB: j + 1,
-                message: `はい。aaa[${j}] を右へずらします (aaa[${j + 1}] = aaa[${j}])`,
+                message: `左のほうが大きいね！右にずれてもらおう。`,
                 variables: { j, jNext: j + 1 },
-                codeLine: 11
+                codeLine: 6
             };
 
             [cards[j], cards[j + 1]] = [cards[j + 1], cards[j]];
@@ -55,18 +55,18 @@ export function* insertionSort(cards) {
         yield {
             type: 'from_hozon',
             index: j + 1,
-            message: `hozon (${key.value}) を aaa[${j + 1}] に戻します`,
+            message: `ここなら入るね！手元のカード (${key.value}) を戻そう (挿入)`,
             variables: { j: j + 1, hozon: key.value },
-            codeLine: 14
+            codeLine: 9
         };
 
         const sortedIndices = Array.from({ length: k }, (_, idx) => idx + 1);
         yield {
             type: 'sorted',
             indices: sortedIndices,
-            message: `aaa[1]～aaa[${k}] までソート完了`,
+            message: `ここまで (aaa[1]～aaa[${k}]) はきれいに並んだよ！`,
             variables: { k },
-            codeLine: 16
+            codeLine: 10
         };
 
         yield {
@@ -80,8 +80,8 @@ export function* insertionSort(cards) {
     yield {
         type: 'sorted',
         indices: Array.from({ length: n }, (_, i) => i + 1),
-        message: `ソート完了`,
+        message: `全部の並び替えが終わったよ！ (完了)`,
         variables: {},
-        codeLine: 20
+        codeLine: 11
     };
 }

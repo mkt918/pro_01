@@ -3,7 +3,7 @@ export function* bubbleSort(cards) {
 
     yield {
         type: 'info',
-        message: `バブルソート (1-based)。要素数 ${n}。隣り合う要素 aaa[j], aaa[j+1] を比較します。`,
+        message: `バブルソートをはじめよう！カードの枚数は ${n} 枚だね。`,
         variables: { n },
         codeLine: 1
     };
@@ -17,9 +17,9 @@ export function* bubbleSort(cards) {
             yield {
                 type: 'compare',
                 indices: [j, j + 1],
-                message: `比較: aaa[${j}](${cards[j].value}) vs aaa[${j + 1}](${cards[j + 1].value})`,
+                message: `左 (${cards[j].value}) と 右 (${cards[j + 1].value}) を比べるよ。左のほうが大きいかな？`,
                 variables: { i, j, next: j + 1 },
-                codeLine: 5
+                codeLine: 4
             };
 
             if (cards[j].value > cards[j + 1].value) {
@@ -27,9 +27,9 @@ export function* bubbleSort(cards) {
                     type: 'swap',
                     indexA: j,
                     indexB: j + 1,
-                    message: `交換: ${cards[j].value} > ${cards[j + 1].value}`,
+                    message: `左のほうが大きいね！場所を入れ替えるよ (交換)`,
                     variables: { i, j, next: j + 1 },
-                    codeLine: 7
+                    codeLine: 5
                 };
 
                 [cards[j], cards[j + 1]] = [cards[j + 1], cards[j]];
@@ -40,9 +40,9 @@ export function* bubbleSort(cards) {
         yield {
             type: 'sorted',
             indices: [n - i],
-            message: `aaa[${n - i}] が確定しました`,
+            message: `これで aaa[${n - i}] のカードは場所が決定！ (確定)`,
             variables: { i },
-            codeLine: 15
+            codeLine: 8
         };
 
         if (!swapped) break;
@@ -51,8 +51,8 @@ export function* bubbleSort(cards) {
     yield {
         type: 'sorted',
         indices: Array.from({ length: n }, (_, idx) => idx + 1),
-        message: `ソート完了`,
+        message: `全部の並び替えが終わったよ！ (完了)`,
         variables: {},
-        codeLine: 20
+        codeLine: 9
     };
 }

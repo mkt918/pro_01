@@ -3,7 +3,7 @@ export function* selectionSort(cards) {
 
     yield {
         type: 'info',
-        message: `選択ソート (1-based)。aaa[1] から aaa[${n}] まで整列させていきます。`,
+        message: `選択ソートはじめるよ。一番小さい数字を探して、左から順番に並べていくね。`,
         variables: { n },
         codeLine: 1
     };
@@ -15,18 +15,18 @@ export function* selectionSort(cards) {
         yield {
             type: 'select',
             indices: [minIdx],
-            message: `暫定最小: aaa[${minIdx}]`,
+            message: `まずはこのカード (${cards[minIdx].value}) を「暫定の最小」として覚えておくよ。`,
             variables: { k, minIdx },
-            codeLine: 5
+            codeLine: 3
         };
 
         for (let j = k + 1; j <= n; j++) {
             yield {
                 type: 'compare',
                 indices: [minIdx, j],
-                message: `比較: 暫定最小(${cards[minIdx].value}) vs aaa[${j}](${cards[j].value})`,
+                message: `暫定の最小 (${cards[minIdx].value}) と、このカード (${cards[j].value}) を比べるよ。`,
                 variables: { minIdx, j },
-                codeLine: 8
+                codeLine: 4
             };
 
             if (cards[j].value < cards[minIdx].value) {
@@ -34,9 +34,9 @@ export function* selectionSort(cards) {
                 yield {
                     type: 'select',
                     indices: [minIdx],
-                    message: `新最小発見: ${cards[minIdx].value} (場所: aaa[${minIdx}])`,
+                    message: `もっと小さい数字 (${cards[minIdx].value}) を発見！こっちを新しい最小として覚えるね。`,
                     variables: { minIdx, newMin: cards[minIdx].value },
-                    codeLine: 10
+                    codeLine: 6
                 };
             }
         }
@@ -46,9 +46,9 @@ export function* selectionSort(cards) {
                 type: 'swap',
                 indexA: k,
                 indexB: minIdx,
-                message: `最小値 aaa[${minIdx}] を未ソート先頭 aaa[${k}] と交換`,
+                message: `見つけた一番小さい数字 (${cards[minIdx].value}) を、左のカードと入れ替えるよ (交換)`,
                 variables: { k, minIdx },
-                codeLine: 15
+                codeLine: 8
             };
             [cards[k], cards[minIdx]] = [cards[minIdx], cards[k]];
         }
@@ -56,17 +56,17 @@ export function* selectionSort(cards) {
         yield {
             type: 'sorted',
             indices: [k],
-            message: `aaa[${k}] が確定`,
+            message: `これで aaa[${k}] の場所は決定！ (確定)`,
             variables: { k },
-            codeLine: 18
+            codeLine: 9
         };
     }
 
     yield {
         type: 'sorted',
         indices: Array.from({ length: n }, (_, i) => i + 1),
-        message: `ソート完了`,
+        message: `全部の並び替えが終わったよ！ (完了)`,
         variables: {},
-        codeLine: 20
+        codeLine: 10
     };
 }

@@ -1,69 +1,68 @@
 export const codeTemplates = {
     linear: [
-        "1. ターゲットを設定 (target)",
-        "2. k = 1 から N まで aaa[k] を確認",
-        "3. if (aaa[k] == target) 見つかりました！",
-        "4. loop 終了",
-        "5. 見つかりませんでした"
+        "1. 探している数字(Target)を決めるよ！",
+        "2. 1番目から順番にカードをめくるよ (aaa[k])",
+        "3. if (カード == Target) 見つかった！",
+        "4. まだなら次へ (繰り返し)",
+        "5. 最後まで探したけどなかった..."
     ],
     binary: [
-        "1. low = 1, high = N",
-        "2. while (low <= high)",
-        "3.   mid = (low + high) / 2",
-        "4.   check aaa[mid]",
-        "5.   if (aaa[mid] == target)",
-        "6.     見つかりました",
-        "7.   else if (aaa[mid] < target)",
-        "8.     low = mid + 1",
-        "9.   else",
-        "10.    high = mid - 1",
-        "11. end while",
-        "12. 見つかりませんでした"
+        "1. 探す範囲を決めるよ (最初は全部)",
+        "2. while (範囲がある間は繰り返す)",
+        "3.   真ん中のカードを見るよ (mid)",
+        "4.   if (真ん中 == Target) 見つかった！",
+        "5.   else if (真ん中 < Target) もっと大きい数字だ！",
+        "6.     右側を探そう (範囲を右へ)",
+        "7.   else (もっと小さい数字だ！)",
+        "8.     左側を探そう (範囲を左へ)",
+        "9. end while",
+        "10. 見つからなかった..."
     ],
     minmax: [
-        "1. 最大値探索開始。maxIndex = 1",
-        "2. 暫定最大 hozon = aaa[1]",
-        "3. loop k = 2 to N",
-        "4.   if (aaa[k] > hozon)",
-        "5.     hozon = aaa[k]",
-        "6.     maxIndex = k",
-        "7. end loop",
-        "8. 終了。最大は hozon (at aaa[maxIndex])"
+        "1. 最大・最小を探すよ。まずは最初の1枚に注目！",
+        "2. 暫定の最大(Max)と最小(Min) = aaa[1]",
+        "3. loop k = 2 to N (残りのカードを確認)",
+        "4.   if (aaa[k] > Max) もっと大きい？",
+        "5.     Max = aaa[k] (最大値を更新！)",
+        "6.   else if (aaa[k] < Min) もっと小さい？",
+        "7.     Min = aaa[k] (最小値を更新！)",
+        "8. end loop",
+        "9. 終了！最大は Max, 最小は Min だよ"
     ],
     bubble: [
-        "1. バブルソート開始",
-        "2. loop i = 0 to N-1 (count)", // i is count
-        "3.   loop j = 1 to N-i-1 (index)",
-        "4.     if (aaa[j] > aaa[j+1])",
-        "5.       swap(aaa[j], aaa[j+1])",
+        "1. バブルソート開始！右から順番に決めていくよ",
+        "2. loop i (何回目のパスかな？)",
+        "3.   loop j (左から順に見ていくよ)",
+        "4.     if (左 > 右) 左のほうが大きい？",
+        "5.       それなら交換！ (左と右を入れ替え)",
         "6.     end if",
         "7.   end loop",
-        "8. aaa[N-i] 確定",
-        "9. end loop"
+        "8. ここで1枚の場所が決定！ (確定)",
+        "9. end loop (完了！)"
     ],
     selection: [
-        "1. 選択ソート開始",
-        "2. loop k = 1 to N-1", // k is index
-        "3.   minIdx = k",
-        "4.   loop j = k+1 to N",
-        "5.     if (aaa[j] < aaa[minIdx])",
-        "6.       minIdx = j",
+        "1. 選択ソート開始！一番小さい数字を探すよ",
+        "2. loop k (ここから後ろを探すよ)",
+        "3.   今のところ一番小さいのはこれ (暫定最小)",
+        "4.   loop j (残りのカードと比べるよ)",
+        "5.     if (もっと小さいカードがあった！)",
+        "6.       最小ペアを更新！ (記憶する)",
         "7.   end loop",
-        "8.   swap(aaa[k], aaa[minIdx])",
-        "9. aaa[k] 確定",
-        "10. end loop"
+        "8.   見つけた最小のカードを左に持ってくる (交換)",
+        "9. この場所はこれで決定！ (確定)",
+        "10. end loop (完了！)"
     ],
     insertion: [
-        "1. 挿入ソート開始",
-        "2. loop k = 2 to N", // k is index
-        "3.   hozon = aaa[k]",
-        "4.   j = k - 1",
-        "5.   while (j >= 1 && aaa[j] > hozon)",
-        "6.     aaa[j+1] = aaa[j]",
-        "7.     j--",
+        "1. 挿入ソート開始！左から順番に並べていくよ",
+        "2. loop k (このカードを整理するよ)",
+        "3.   手元に持っておく (hozonに退避)",
+        "4.   j = k - 1 (左隣と比較開始)",
+        "5.   while (左のほうが大きい間は繰り返す)",
+        "6.     カードを右にずらすよ",
+        "7.     さらに左を見る (j--)",
         "8.   end while",
-        "9.   aaa[j+1] = hozon",
-        "10. aaa[1..k] ソート完了",
-        "11. end loop"
+        "9.   空いた場所にカードを入れる (挿入！)",
+        "10. ここまで整列完了！",
+        "11. end loop (完了！)"
     ]
 };
