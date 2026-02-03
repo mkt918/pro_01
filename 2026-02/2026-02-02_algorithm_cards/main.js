@@ -33,15 +33,15 @@ const visualizer = new Visualizer(deck, {
             // Update Visual Variable Boxes
             const valJ = variables.j !== undefined ? variables.j : '';
             const valK = variables.k !== undefined ? variables.k : '';
-
-            // Map 'i' to 'k' for display if k is not present
-            const displayK = valK !== '' ? valK : (variables.i !== undefined ? variables.i : '');
+            const valI = variables.i !== undefined ? variables.i : '';
 
             const elJ = document.getElementById('var-j');
             const elK = document.getElementById('var-k');
+            const elI = document.getElementById('var-i');
 
             if (elJ) elJ.textContent = valJ;
-            if (elK) elK.textContent = displayK;
+            if (elK) elK.textContent = valK;
+            if (elI) elI.textContent = valI;
         }
 
         // Highlight Code Line logic moved to highlightCode callback
@@ -69,43 +69,6 @@ const visualizer = new Visualizer(deck, {
     }
 });
 
-const btnManual = document.getElementById('btn-manual-mode');
-let isManualMode = false;
-
-btnManual.addEventListener('click', () => {
-    isManualMode = !isManualMode;
-    const btnBack = document.getElementById('btn-step-back');
-
-    if (isManualMode) {
-        btnManual.textContent = "手動モード終了 (Exit Manual)";
-        btnManual.style.background = "var(--accent-color)";
-        deck.enableManualMode();
-
-        // Disable alg controls EXCEPT Undo (Back)
-        document.getElementById('btn-play-pause').disabled = true;
-        document.getElementById('btn-step-fwd').disabled = true;
-        document.getElementById('algo-select').disabled = true;
-
-        // Enable Undo button
-        btnBack.disabled = false;
-        btnBack.textContent = "元に戻す (Undo)"; // Optional: Rename for clarity
-
-        visualizer.reset(); // Clear visualizer state to avoid conflict
-    } else {
-        btnManual.textContent = "手動モード (Manual)";
-        btnManual.style.background = ""; // Revert to default/CSS
-        deck.disableManualMode();
-
-        // Enable alg controls
-        document.getElementById('btn-play-pause').disabled = false;
-        document.getElementById('btn-step-fwd').disabled = false;
-        document.getElementById('btn-step-back').disabled = false;
-        btnBack.textContent = "戻る (Back)"; // Revert label
-
-        document.getElementById('algo-select').disabled = false;
-    }
-});
-
 // Initial Render
 deck.generateSpades(CARD_COUNT);
 deck.render(); // No argument needed as it targets #aaa-container internally logic update
@@ -113,15 +76,54 @@ renderCodeTemplate('linear');
 
 // Event Listeners
 document.getElementById('algo-select').addEventListener('change', (e) => {
-    reset();
-    renderCodeTemplate(e.target.value);
-    // Update basic visibility without reset if possible? No, reset ensures clean state.
-    // Actually, visibility is toggled inside initAlgorithm or reset?
-    // Let's call reset which calls initAlgorithm logic or at least UI update?
-    // reset() currently doesn't hide/show inputs. 
-    // Let's move visibility toggle to a UI update function.
+    const selected = e.target.value;
+
+    // Always reset visualizer state first
+    visualizer.reset();
+
+    // Handle Manual Mode vs Algorithms
+    if (selected === 'manual') {
+        enableManualModeUI();
+    } else {
+        disableManualModeUI(); // Switch to auto mode UI
+        renderCodeTemplate(selected);
+        reset(); // Re-run reset logic for algorithm setup
+        // But wait, reset() calls generateSpades and render...
+        // Let's optimize. reset() handles general setup.
+    }
+
     updateUIControls();
 });
+
+function enableManualModeUI() {
+    isManualMode = true;
+    deck.enableManualMode();
+
+    // Disable alg controls EXCEPT Undo (Back)
+    document.getElementById('btn-play-pause').disabled = true;
+    document.getElementById('btn-step-fwd').disabled = true;
+
+    // Enable Undo button
+    const btnBack = document.getElementById('btn-step-back');
+    btnBack.disabled = false;
+    btnBack.textContent = "元に戻す (Undo)";
+
+    // Show manual instructions
+    renderCodeTemplate('manual');
+}
+
+function disableManualModeUI() {
+    isManualMode = false;
+    deck.disableManualMode();
+
+    // Enable alg controls
+    document.getElementById('btn-play-pause').disabled = false;
+    document.getElementById('btn-step-fwd').disabled = false;
+
+    const btnBack = document.getElementById('btn-step-back');
+    btnBack.disabled = false;
+    btnBack.textContent = "戻る (Back)";
+}
 
 document.getElementById('target-value').addEventListener('change', () => {
 });
@@ -268,4 +270,15 @@ function renderCodeTemplate(algoName) {
 }
 
 // Initial reset
-reset();
+// reset(); // We want manual mode first!
+
+let isManualMode = true; // Default start
+// Initialize Deck
+deck.generateSpades(CARD_COUNT);
+deck.render();
+
+// Enable Manual UI
+enableManualModeUI();
+
+// Render Manual Template
+renderCodeTemplate('manual');
