@@ -43,58 +43,59 @@
       </div>
     </header>
 
-    <div
-      class="stage glass-panel flex flex-col lg:flex-row items-center lg:items-center justify-center gap-4 min-h-[300px] overflow-x-auto"
+    <div class="stage glass-panel flex flex-col items-center justify-center gap-8 min-h-[400px] overflow-x-auto"
       id="stage">
-      <div class="arrays-container flex flex-col gap-4">
-        <div class="array-row flex items-center gap-2">
-          <div class="array-label font-mono text-lg font-bold w-12 text-right">aaa[]</div>
-          <div class="array-slots flex gap-2" id="aaa-container"></div>
-        </div>
-      </div>
 
-      <div class="flex flex-wrap gap-2 justify-center items-center">
+      <!-- Top Slots Row: neatly aligned above the cards -->
+      <div class="flex flex-wrap gap-4 justify-center items-end border-b border-white/10 pb-6 w-full">
         <div
-          class="hozon-container flex flex-col items-center gap-2 bg-white/5 p-3 rounded-xl border border-dashed border-white/20 min-w-[100px]">
-          <div class="text-sm font-bold font-mono text-cyan-400">hozon</div>
+          class="hozon-container flex flex-col items-center gap-2 bg-white/5 p-3 rounded-xl border border-dashed border-white/20 min-w-[90px]">
+          <div class="text-xs font-bold font-mono text-cyan-400">hozon</div>
           <div class="hozon-slot" id="hozon-slot"></div>
         </div>
 
         <div
-          class="found-container flex flex-col items-center gap-2 bg-emerald-400/5 p-3 rounded-xl border border-dashed border-emerald-400/20 min-w-[100px]">
-          <div class="text-sm font-bold font-mono text-emerald-400">foundAt</div>
+          class="found-container flex flex-col items-center gap-2 bg-emerald-400/5 p-3 rounded-xl border border-dashed border-emerald-400/20 min-w-[90px]">
+          <div class="text-xs font-bold font-mono text-emerald-400">foundAt</div>
           <div class="hozon-slot" id="found-slot"></div>
         </div>
 
         <div
-          class="target-container flex flex-col items-center gap-2 bg-yellow-400/5 p-3 rounded-xl border border-dashed border-yellow-400/20 min-w-[100px]">
-          <div class="text-sm font-bold font-mono text-yellow-400">Target</div>
+          class="target-container flex flex-col items-center gap-2 bg-yellow-400/5 p-3 rounded-xl border border-dashed border-yellow-400/20 min-w-[90px]">
+          <div class="text-xs font-bold font-mono text-yellow-400">Target</div>
           <div class="hozon-slot" id="target-slot"></div>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <div
-            class="max-container flex flex-col items-center gap-2 bg-red-400/5 p-3 rounded-xl border border-dashed border-red-400/20 min-w-[100px]">
-            <div class="text-sm font-bold font-mono text-red-400">Max</div>
-            <div class="hozon-slot" id="max-slot"></div>
+        <div
+          class="max-container flex flex-col items-center gap-2 bg-red-400/5 p-3 rounded-xl border border-dashed border-red-400/20 min-w-[90px]">
+          <div class="text-xs font-bold font-mono text-red-400">Max</div>
+          <div class="hozon-slot" id="max-slot"></div>
+        </div>
+
+        <div
+          class="min-container flex flex-col items-center gap-2 bg-blue-400/5 p-3 rounded-xl border border-dashed border-blue-400/20 min-w-[90px]">
+          <div class="text-xs font-bold font-mono text-blue-400">Min</div>
+          <div class="hozon-slot" id="min-slot"></div>
+        </div>
+
+        <!-- Variables in the same row -->
+        <div class="flex gap-4 bg-white/5 p-3 rounded-xl border border-white/10 ml-4">
+          <div class="var-box flex flex-col items-center gap-1">
+            <div class="var-label font-bold font-mono text-sm text-yellow-300 italic">j</div>
+            <div class="var-value" id="var-j"></div>
           </div>
-          <div
-            class="min-container flex flex-col items-center gap-2 bg-blue-400/5 p-3 rounded-xl border border-dashed border-blue-400/20 min-w-[100px]">
-            <div class="text-sm font-bold font-mono text-blue-400">Min</div>
-            <div class="hozon-slot" id="min-slot"></div>
+          <div class="var-box flex flex-col items-center gap-1">
+            <div class="var-label font-bold font-mono text-sm text-pink-400 italic">k/i</div>
+            <div class="var-value" id="var-k"></div>
           </div>
         </div>
       </div>
 
-      <div
-        class="variables-container flex flex-row lg:flex-col gap-4 bg-cyan-400/5 p-3 rounded-xl border border-white/20 min-w-[100px]">
-        <div class="var-box flex flex-col items-center gap-1">
-          <div class="var-label font-bold font-mono text-lg text-yellow-300">j</div>
-          <div class="var-value" id="var-j"></div>
-        </div>
-        <div class="var-box flex flex-col items-center gap-1">
-          <div class="var-label font-bold font-mono text-lg text-pink-400">k/i</div>
-          <div class="var-value" id="var-k"></div>
+      <!-- Main array container below the slots -->
+      <div class="arrays-container flex flex-col gap-4 w-full items-center">
+        <div class="array-row flex items-center gap-4">
+          <div class="array-label font-mono text-2xl font-bold text-white/50 italic mr-2">aaa[]</div>
+          <div class="array-slots flex gap-2 items-end" id="aaa-container"></div>
         </div>
       </div>
     </div>

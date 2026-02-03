@@ -82,7 +82,8 @@ export class Card {
 
       // Add numeric label
       const label = document.createElement('div');
-      label.className = 'absolute top-0 right-0 bg-black/60 text-white text-[10px] px-1 rounded-bl-md font-mono';
+      // Added z-10 for visibility over image, and increased font size, added border
+      label.className = 'absolute top-0 right-0 bg-black/80 text-white text-xs font-bold px-1.5 py-0.5 rounded-bl-md font-mono z-10 border-l border-b border-white/30';
       label.textContent = this.value;
       this.element.appendChild(label);
 
