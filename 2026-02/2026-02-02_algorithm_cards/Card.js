@@ -61,9 +61,9 @@ export class Card {
       });
     }
 
+    this.element = div;
     this.updateDisplay();
 
-    this.element = div;
     return div;
   }
 
