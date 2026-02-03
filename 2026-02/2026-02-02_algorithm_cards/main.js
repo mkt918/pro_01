@@ -249,10 +249,9 @@ function reset() {
 
     const algoName = document.getElementById('algo-select').value;
     if (algoName === 'binary') {
-        deck.cards.sort((a, b) => {
-            if (!a || !b) return 0;
-            return a.value - b.value;
-        });
+        const sub = deck.cards.slice(1);
+        sub.sort((a, b) => a.value - b.value);
+        deck.cards = [null, ...sub];
     }
 
     deck.render();
