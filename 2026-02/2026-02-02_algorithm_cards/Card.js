@@ -74,9 +74,18 @@ export class Card {
     if (this.skin === 'image') {
       const img = document.createElement('img');
       const filename = String(this.value).padStart(3, '0');
+      // Vite handles public folder assets. 
+      // Using relative path 'img/...' works if index.html is at root and site at root or base is set.
       img.src = `img/${filename}.png`;
       img.className = 'w-full h-full object-contain rounded';
       this.element.appendChild(img);
+
+      // Add numeric label
+      const label = document.createElement('div');
+      label.className = 'absolute top-0 right-0 bg-black/60 text-white text-[10px] px-1 rounded-bl-md font-mono';
+      label.textContent = this.value;
+      this.element.appendChild(label);
+
       this.element.classList.add('skin-image');
       this.element.classList.remove('trump-skin');
     } else {
