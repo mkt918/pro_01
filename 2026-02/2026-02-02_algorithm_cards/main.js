@@ -266,15 +266,47 @@ function reset() {
     deck.setSlots({ target: null });
 }
 
+let isManualMode = true; // Default start
+let currentLanguage = 'macro'; // 'macro' or 'python'
+
 function renderCodeTemplate(algoName) {
-    const lines = codeTemplates[algoName] || ["コードがありません"];
-    codeView.innerHTML = lines.map(line => `<div class="code-line">${line}</div>`).join('');
+    const templates = codeTemplates[algoName];
+    if (!templates) {
+        codeView.innerHTML = '<div class="code-line">コードがありません</div>';
+        return;
+    }
+    const lines = templates[currentLanguage] || templates['macro'] || ["コードがありません"];
+    codeView.innerHTML = lines.map(line => `<div class="code-line underline-offset-4">${line}</div>`).join('');
 }
 
-// Initial reset
-// reset(); // We want manual mode first!
+// Tab Switching
+const tabMacro = document.getElementById('tab-macro');
+const tabPython = document.getElementById('tab-python');
 
-let isManualMode = true; // Default start
+function updateTabsUI() {
+    if (currentLanguage === 'macro') {
+        tabMacro.className = "flex-1 rounded-t-lg font-bold transition-all bg-primary text-white shadow-lg border-b-2 border-primary";
+        tabPython.className = "flex-1 rounded-t-lg font-bold transition-all bg-white/5 text-white/50 hover:bg-white/10 shadow-lg border-b-2 border-transparent";
+    } else {
+        tabPython.className = "flex-1 rounded-t-lg font-bold transition-all bg-primary text-white shadow-lg border-b-2 border-primary";
+        tabMacro.className = "flex-1 rounded-t-lg font-bold transition-all bg-white/5 text-white/50 hover:bg-white/10 shadow-lg border-b-2 border-transparent";
+    }
+}
+
+tabMacro.addEventListener('click', () => {
+    currentLanguage = 'macro';
+    updateTabsUI();
+    const algoName = document.getElementById('algo-select').value;
+    renderCodeTemplate(algoName);
+});
+
+tabPython.addEventListener('click', () => {
+    currentLanguage = 'python';
+    updateTabsUI();
+    const algoName = document.getElementById('algo-select').value;
+    renderCodeTemplate(algoName);
+});
+
 // Initialize Deck
 deck.generateSpades(CARD_COUNT);
 deck.render();
@@ -282,5 +314,5 @@ deck.render();
 // Enable Manual UI
 enableManualModeUI();
 
-// Render Manual Template
+// Render Initial Template
 renderCodeTemplate('manual');

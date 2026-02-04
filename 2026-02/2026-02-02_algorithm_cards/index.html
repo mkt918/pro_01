@@ -136,11 +136,20 @@
           i = 0, j = 0
         </div>
       </div>
-      <div class="glass-panel code-view bg-black/40 font-mono text-sm leading-6 max-h-[400px] overflow-y-auto"
-        id="code-view">
-        <div class="code-line">function example() {</div>
-        <div class="code-line px-4"> console.log("Hello");</div>
-        <div class="code-line">}</div>
+      <div class="flex flex-col gap-2">
+        <div class="flex gap-2 h-10">
+          <button id="tab-macro"
+            class="flex-1 rounded-t-lg font-bold transition-all bg-primary text-white shadow-lg border-b-2 border-primary">Macro</button>
+          <button id="tab-python"
+            class="flex-1 rounded-t-lg font-bold transition-all bg-white/5 text-white/50 hover:bg-white/10 shadow-lg border-b-2 border-transparent">Python</button>
+        </div>
+        <div
+          class="glass-panel code-view bg-black/40 font-mono text-sm leading-6 max-h-[360px] overflow-y-auto rounded-t-none"
+          id="code-view">
+          <div class="code-line">function example() {</div>
+          <div class="code-line px-4"> console.log("Hello");</div>
+          <div class="code-line">}</div>
+        </div>
       </div>
     </div>
   </div>
