@@ -22,6 +22,14 @@ export function* binarySearch(cards, targetValue) {
 
         const midValue = cards[k_mid].value;
 
+        yield {
+            type: 'compare',
+            indices: [k_mid],
+            message: `hairetsu[mid] (${midValue}) は target (${targetValue}) と同じかな？`,
+            variables: { k_low, k_high, k_mid, midValue, target: targetValue },
+            codeLine: 4 // IF (==)
+        };
+
         if (midValue === targetValue) {
             yield {
                 type: 'to_foundAt',
@@ -39,34 +47,38 @@ export function* binarySearch(cards, targetValue) {
                 codeLine: 5
             };
             return;
-        } else if (midValue < targetValue) {
+        }
+
+        yield {
+            type: 'compare',
+            indices: [k_mid],
+            message: `hairetsu[mid] (${midValue}) は target (${targetValue}) より小さいかな？`,
+            variables: { k_low, k_high, k_mid, midValue, target: targetValue },
+            codeLine: 6 // ELSE IF (<)
+        };
+
+        if (midValue < targetValue) {
             yield {
                 type: 'info',
                 message: `真ん中のカード (${midValue}) は target (${targetValue}) より小さいね。もっと右側を探すために、左端の位置「k_low」を ${k_mid + 1} に更新しよう。`,
                 variables: { k_low: k_mid + 1, k_high },
-                codeLine: 6
+                codeLine: 7 // SET k_low
             };
             k_low = k_mid + 1;
-            yield {
-                type: 'info',
-                message: `探す範囲が ${k_low} 番目から右側になったよ。`,
-                variables: { k_low, k_high },
-                codeLine: 7
-            }
         } else {
             yield {
                 type: 'info',
-                message: `真ん中のカード (${midValue}) は target (${targetValue}) より大きいね。もっと左側を探すために、右端の位置「k_high」を ${k_mid - 1} に更新しよう。`,
-                variables: { k_low, k_high: k_mid - 1 },
-                codeLine: 8
+                message: `ここまでの判定に当てはまらなかったので、真ん中のカード (${midValue}) は target (${targetValue}) より大きいということだね。`,
+                variables: { k_low, k_high, k_mid, midValue, target: targetValue },
+                codeLine: 8 // ELSE
             };
-            k_high = k_mid - 1;
             yield {
                 type: 'info',
-                message: `探す範囲が ${k_high} 番目から左側になったよ。`,
-                variables: { k_low, k_high },
-                codeLine: 9
-            }
+                message: `もっと左側を探すために、右端の位置「k_high」を ${k_mid - 1} に更新しよう。`,
+                variables: { k_low, k_high: k_mid - 1 },
+                codeLine: 9 // SET k_high
+            };
+            k_high = k_mid - 1;
         }
     }
 

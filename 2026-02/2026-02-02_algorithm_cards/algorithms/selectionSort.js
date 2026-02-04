@@ -24,9 +24,17 @@ export function* selectionSort(cards) {
             yield {
                 type: 'compare',
                 indices: [minIdx, j],
-                message: `もっと小さいカードがないか「j」を使って探すよ。今の最小 (hairetsu[minIndex]) と hairetsu[j] を比べるね。`,
+                message: `もっと小さいカードがないか「j」を使って探すよ。`,
                 variables: { k, minIndex: minIdx, j },
-                codeLine: 4
+                codeLine: 3 // FOR (j)
+            };
+
+            yield {
+                type: 'compare',
+                indices: [minIdx, j],
+                message: `hairetsu[j] (${cards[j].value}) は 今の最小 (${cards[minIdx].value}) より小さいかな？`,
+                variables: { k, minIndex: minIdx, j },
+                codeLine: 4 // IF (<)
             };
 
             if (cards[j].value < cards[minIdx].value) {
@@ -34,9 +42,9 @@ export function* selectionSort(cards) {
                 yield {
                     type: 'select',
                     indices: [minIdx],
-                    message: `もっと小さいカード ${cards[minIdx].value} を見つけたよ！「minIndex」を ${j} に書き換えて覚えなおそう。`,
+                    message: `もっと小さいカード ${cards[minIdx].value} を見つけたよ！「minIndex」を ${j} に書き換えよう。`,
                     variables: { k, minIndex: minIdx },
-                    codeLine: 5
+                    codeLine: 5 // SET minIndex
                 };
             }
         }

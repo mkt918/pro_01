@@ -32,51 +32,49 @@ export function* findMinMax(cards) {
         yield {
             type: 'compare',
             indices: [k],
-            message: `次のカード hairetsu[${k}] (${cards[k].value}) を見ていくよ。これは今の「Max」より大きいかな？それとも「Min」より小さいかな？`,
+            message: `次のカード hairetsu[${k}] (${cards[k].value}) を見ていくよ。これは今の「Max」より大きいかな？`,
             variables: { k, max: maxValue, min: minValue, current: cards[k].value },
-            codeLine: 2
+            codeLine: 2 // FOR
         };
-        // Also highlight comparison? Maybe 4 inside?
-        // Let's stick to 3 for loop Start, and if specific logic hits, highlight specific line.
+
+        yield {
+            type: 'compare',
+            indices: [k],
+            message: `hairetsu[${k}] (${cards[k].value}) は Max (${maxValue}) より大きいかな？`,
+            variables: { k, max: maxValue, min: minValue },
+            codeLine: 3 // IF (> Max)
+        };
 
         if (cards[k].value > maxValue) {
-            // Check Max
-            yield {
-                type: 'info',
-                message: `今の最大値 ${maxValue} を超える ${cards[k].value} が見つかったよ！`,
-                variables: { k, max: maxValue },
-                codeLine: 3
-            };
-
             maxValue = cards[k].value;
             maxIndex = k;
             yield {
                 type: 'to_max',
                 index: k,
-                message: `「Max」の箱を新しい数字 ${maxValue} で書き換えよう。`,
+                message: `Max を超えるカードが見つかったので、「Max」の箱を ${maxValue} で書き換えよう。`,
                 variables: { k, max: maxValue, min: minValue },
-                codeLine: 4
+                codeLine: 4 // SET Max
             };
-        } else if (cards[k].value < minValue) {
-            // Check Min
-            // Note: In minMax.js original logic, it was else if.
-            // If > Max, it can't be < Min (unless start, but logic holds).
+        } else {
             yield {
-                type: 'info',
-                message: `今の最小値 ${minValue} よりも小さい ${cards[k].value} が見つかったよ！`,
-                variables: { k, min: minValue },
-                codeLine: 5
+                type: 'compare',
+                indices: [k],
+                message: `Max より大きくはなかったね。次は Min (${minValue}) より小さいか確認してみよう。`,
+                variables: { k, max: maxValue, min: minValue },
+                codeLine: 5 // ELSE IF (< Min)
             };
 
-            minValue = cards[k].value;
-            minIndex = k;
-            yield {
-                type: 'to_min',
-                index: k,
-                message: `「Min」の箱を新しい数字 ${minValue} で書き換えよう。`,
-                variables: { k, max: maxValue, min: minValue },
-                codeLine: 6
-            };
+            if (cards[k].value < minValue) {
+                minValue = cards[k].value;
+                minIndex = k;
+                yield {
+                    type: 'to_min',
+                    index: k,
+                    message: `今の最小値よりも小さいカードが見つかったので、「Min」を ${minValue} に更新しよう。`,
+                    variables: { k, max: maxValue, min: minValue },
+                    codeLine: 6 // SET Min
+                };
+            }
         }
     }
 

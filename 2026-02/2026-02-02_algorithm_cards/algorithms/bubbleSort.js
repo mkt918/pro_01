@@ -17,9 +17,17 @@ export function* bubbleSort(cards) {
             yield {
                 type: 'compare',
                 indices: [j, j + 1],
-                message: `「j」は今見ている場所だよ。hairetsu[${j}] と隣の [${j + 1}] を比べて、左が大きければ右へ流していくよ。`,
+                message: `「j」は今見ている場所だよ。hairetsu[${j}] とその右隣を比べてみよう。`,
                 variables: { i: i + 1, j, next: j + 1 },
-                codeLine: 3
+                codeLine: 2 // FOR (j)
+            };
+
+            yield {
+                type: 'compare',
+                indices: [j, j + 1],
+                message: `左 (${cards[j].value}) は右 (${cards[j + 1].value}) より大きいかな？`,
+                variables: { i: i + 1, j, next: j + 1 },
+                codeLine: 3 // IF (>)
             };
 
             if (cards[j].value > cards[j + 1].value) {
@@ -27,9 +35,9 @@ export function* bubbleSort(cards) {
                     type: 'swap',
                     indexA: j,
                     indexB: j + 1,
-                    message: `左のほうが大きいので、SWAP（入れ替え）を行うよ。大きい数字が右側に移動したね。`,
+                    message: `左のほうが大きいので、SWAP（入れ替え）を行うよ。`,
                     variables: { i: i + 1, j, next: j + 1 },
-                    codeLine: 4
+                    codeLine: 4 // SWAP
                 };
 
                 [cards[j], cards[j + 1]] = [cards[j + 1], cards[j]];

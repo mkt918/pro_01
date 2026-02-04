@@ -33,23 +33,30 @@ export function* insertionSort(cards) {
         while (j >= 1 && cards[j].value > key.value) {
             yield {
                 type: 'compare',
-                indices: [j, j + 1], // j+1 is effectively 'hole' or current compare spot
-                message: `「j」を使って、左側にある整列済みのカードと比べていくよ。左のカード (${cards[j].value}) は手元 (${key.value}) より大きいかな？`,
+                indices: [j, j + 1],
+                message: `左のカード (${cards[j].value}) は 手元のカード (${key.value}) より大きいかな？`,
                 variables: { j, hozon: key.value },
-                codeLine: 4
+                codeLine: 4 // WHILE (Condition)
             };
 
             yield {
                 type: 'swap',
                 indexA: j,
                 indexB: j + 1,
-                message: `左のカードのほうが大きいね！これでは手元のカードを入れられないから、左のカードを右に1つずらして「空き場所」を作るよ。`,
+                message: `左のほうが大きいので、右にずらして空き場所を広げよう。`,
                 variables: { j, jNext: j + 1 },
-                codeLine: 5
+                codeLine: 5 // SET hairetsu[j+1]
             };
 
             [cards[j], cards[j + 1]] = [cards[j + 1], cards[j]];
             j = j - 1;
+
+            yield {
+                type: 'info',
+                message: `「j」を 1 つ減らして、さらに左側のカードも確認してみるね。`,
+                variables: { j, hozon: key.value },
+                codeLine: 4 // WHILE (Next potential check)
+            };
         }
 
         yield {

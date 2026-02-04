@@ -14,7 +14,15 @@ export function* linearSearch(cards, targetValue) {
             indices: [k],
             message: `「k」は今チェックしている番号だよ。今は hairetsu[${k}] のカードを見てみよう。`,
             variables: { k: k, value: cards[k].value, target: targetValue },
-            codeLine: 2
+            codeLine: 2 // FOR
+        };
+
+        yield {
+            type: 'compare',
+            indices: [k],
+            message: `hairetsu[${k}] (${cards[k].value}) は target (${targetValue}) と同じかな？ 判定してみよう。`,
+            variables: { k: k, value: cards[k].value, target: targetValue },
+            codeLine: 3 // IF
         };
 
         if (cards[k].value === targetValue) {

@@ -3,9 +3,9 @@ export const codeTemplates = {
         macro: [
             { text: "SET target = (探したい数字)", step: 1 },
             { text: "FOR k = 1 TO 13", step: 2 },
-            { text: "    IF hairetsu[k] == target THEN", step: 2 },
+            { text: "    IF hairetsu[k] == target THEN", step: 3 },
             { text: "        SET foundAt = k : EXIT FOR", step: 4 },
-            { text: "    END IF", step: 2 },
+            { text: "    END IF", step: 3 },
             { text: "NEXT k", step: 2 },
             { text: "IF foundAt == NULL THEN (見つからず)", step: 7 }
         ],
@@ -13,7 +13,7 @@ export const codeTemplates = {
             { text: "target = 2 # 探したい数字", step: 1 },
             { text: "found_at = -1", step: 1 },
             { text: "for k in range(0, len(hairetsu)):", step: 2 },
-            { text: "    if hairetsu[k] == target:", step: 2 },
+            { text: "    if hairetsu[k] == target:", step: 3 },
             { text: "        found_at = k", step: 4 },
             { text: "        break", step: 4 },
             { text: "print(f'Found at: {found_at}')", step: 7 }
@@ -22,24 +22,24 @@ export const codeTemplates = {
     binary: {
         macro: [
             { text: "SET k_low = 1, k_high = 13", step: 1 },
-            { text: "WHILE k_low <= k_high", step: 3 },
+            { text: "WHILE k_low <= k_high", step: 2 },
             { text: "    SET k_mid = (k_low + k_high) / 2", step: 3 },
-            { text: "    IF hairetsu[k_mid] == target THEN", step: 5 },
+            { text: "    IF hairetsu[k_mid] == target THEN", step: 4 },
             { text: "        SET foundAt = k_mid : EXIT WHILE", step: 5 },
             { text: "    ELSE IF hairetsu[k_mid] < target THEN", step: 6 },
             { text: "        SET k_low = k_mid + 1", step: 7 },
             { text: "    ELSE", step: 8 },
             { text: "        SET k_high = k_mid - 1", step: 9 },
-            { text: "    END IF", step: 3 },
-            { text: "WEND", step: 3 },
+            { text: "    END IF", step: 2 },
+            { text: "WEND", step: 2 },
             { text: "IF k_low > k_high THEN (見つからず)", step: 11 }
         ],
         python: [
             { text: "low, high = 0, len(hairetsu) - 1", step: 1 },
             { text: "found_at = -1", step: 1 },
-            { text: "while low <= high:", step: 3 },
+            { text: "while low <= high:", step: 2 },
             { text: "    mid = (low + high) // 2", step: 3 },
-            { text: "    if hairetsu[mid] == target:", step: 5 },
+            { text: "    if hairetsu[mid] == target:", step: 4 },
             { text: "        found_at = mid", step: 5 },
             { text: "        break", step: 5 },
             { text: "    elif hairetsu[mid] < target:", step: 6 },
@@ -74,18 +74,18 @@ export const codeTemplates = {
     bubble: {
         macro: [
             { text: "FOR i = 1 TO 12", step: 1 },
-            { text: "    FOR j = 1 TO 13 - i", step: 3 },
+            { text: "    FOR j = 1 TO 13 - i", step: 2 },
             { text: "        IF hairetsu[j] > hairetsu[j + 1] THEN", step: 3 },
             { text: "            SWAP hairetsu[j], hairetsu[j + 1]", step: 4 },
-            { text: "        END IF", step: 3 },
-            { text: "    NEXT j", step: 3 },
+            { text: "        END IF", step: 2 },
+            { text: "    NEXT j", step: 2 },
             { text: "NEXT i", step: 1 }
         ],
         python: [
             { text: "n = len(hairetsu)", step: 1 },
             { text: "for i in range(n):", step: 1 },
             { text: "    swapped = False", step: 1 },
-            { text: "    for j in range(0, n - i - 1):", step: 3 },
+            { text: "    for j in range(0, n - i - 1):", step: 2 },
             { text: "        if hairetsu[j] > hairetsu[j + 1]:", step: 3 },
             { text: "            hairetsu[j], hairetsu[j + 1] = \\", step: 4 },
             { text: "                hairetsu[j+1], hairetsu[j]", step: 4 },
@@ -98,11 +98,11 @@ export const codeTemplates = {
         macro: [
             { text: "FOR k = 1 TO 12", step: 1 },
             { text: "    SET minIndex = k", step: 2 },
-            { text: "    FOR j = k + 1 TO 13", step: 4 },
+            { text: "    FOR j = k + 1 TO 13", step: 3 },
             { text: "        IF hairetsu[j] < hairetsu[minIndex] THEN", step: 4 },
             { text: "            SET minIndex = j", step: 5 },
-            { text: "        END IF", step: 4 },
-            { text: "    NEXT j", step: 4 },
+            { text: "        END IF", step: 3 },
+            { text: "    NEXT j", step: 3 },
             { text: "    SWAP hairetsu[k], hairetsu[minIndex]", step: 8 },
             { text: "NEXT k", step: 9 }
         ],
@@ -110,7 +110,7 @@ export const codeTemplates = {
             { text: "n = len(hairetsu)", step: 1 },
             { text: "for k in range(n):", step: 1 },
             { text: "    min_idx = k", step: 2 },
-            { text: "    for j in range(k + 1, n):", step: 4 },
+            { text: "    for j in range(k + 1, n):", step: 3 },
             { text: "        if hairetsu[j] < hairetsu[min_idx]:", step: 4 },
             { text: "            min_idx = j", step: 5 },
             { text: "    if min_idx != k:", step: 8 },
