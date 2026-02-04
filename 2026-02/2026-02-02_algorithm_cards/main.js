@@ -53,22 +53,29 @@ const visualizer = new Visualizer(deck, {
     onFinished: () => {
         msgText.textContent += " (完了)";
     },
-    highlightCode: (codeLine, type) => {
-        if (codeLine) {
+    highlightCode: (stepId, type) => {
+        if (stepId !== undefined && stepId !== null) {
+            const lines = codeView.querySelectorAll('.code-line');
+            lines.forEach(el => {
+                el.classList.remove('active', 'compare', 'swap');
+                if (el.dataset.step == stepId) {
+                    el.classList.add('active');
+                    if (type === 'compare') {
+                        el.classList.add('compare');
+                    } else if (type === 'swap') {
+                        el.classList.add('swap');
+                    }
+                }
+            });
+            const activeLine = codeView.querySelector('.code-line.active');
+            if (activeLine) {
+                activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        } else {
             const lines = codeView.querySelectorAll('.code-line');
             lines.forEach(el => {
                 el.classList.remove('active', 'compare', 'swap');
             });
-            if (lines[codeLine - 1]) {
-                const activeLine = lines[codeLine - 1];
-                activeLine.classList.add('active');
-                if (type === 'compare') {
-                    activeLine.classList.add('compare');
-                } else if (type === 'swap') {
-                    activeLine.classList.add('swap');
-                }
-                activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
         }
     }
 });
@@ -278,7 +285,11 @@ function renderCodeTemplate(algoName) {
         return;
     }
     const lines = templates[currentLanguage] || templates['macro'] || ["コードがありません"];
-    codeView.innerHTML = lines.map(line => `<div class="code-line underline-offset-4">${line}</div>`).join('');
+    codeView.innerHTML = lines.map(line => {
+        const text = typeof line === 'string' ? line : line.text;
+        const step = (line.step !== undefined && line.step !== null) ? ` data-step="${line.step}"` : '';
+        return `<div class="code-line underline-offset-4"${step}>${text}</div>`;
+    }).join('');
 }
 
 // Tab Switching
@@ -300,6 +311,10 @@ tabMacro.addEventListener('click', () => {
     updateTabsUI();
     const algoName = document.getElementById('algo-select').value;
     renderCodeTemplate(algoName);
+    if (visualizer.currentStepIndex >= 0) {
+        const step = visualizer.steps[visualizer.currentStepIndex];
+        visualizer.highlightCode(step.codeLine, step.type);
+    }
 });
 
 tabPython.addEventListener('click', () => {
@@ -307,6 +322,10 @@ tabPython.addEventListener('click', () => {
     updateTabsUI();
     const algoName = document.getElementById('algo-select').value;
     renderCodeTemplate(algoName);
+    if (visualizer.currentStepIndex >= 0) {
+        const step = visualizer.steps[visualizer.currentStepIndex];
+        visualizer.highlightCode(step.codeLine, step.type);
+    }
 });
 
 // Initialize Deck

@@ -138,6 +138,9 @@ export class Visualizer {
             codeLine: step.codeLine
         });
 
+        // Trigger code highlighting
+        this.highlightCode(step.codeLine, step.type);
+
         // Apply specific actions
         switch (step.type) {
             case 'compare':

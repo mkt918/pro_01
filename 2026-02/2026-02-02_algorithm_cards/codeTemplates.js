@@ -1,155 +1,160 @@
 export const codeTemplates = {
     linear: {
         macro: [
-            "SET target = (探したい数字)",
-            "FOR k = 1 TO 13",
-            "  IF hairetsu[k] == target THEN",
-            "    SET foundAt = k : EXIT FOR",
-            "  END IF",
-            "NEXT k",
-            "IF foundAt == NULL THEN (見つからず)"
+            { text: "SET target = (探したい数字)", step: 1 },
+            { text: "FOR k = 1 TO 13", step: 2 },
+            { text: "  IF hairetsu[k] == target THEN", step: 2 },
+            { text: "    SET foundAt = k : EXIT FOR", step: 4 },
+            { text: "  END IF", step: 2 },
+            { text: "NEXT k", step: 2 },
+            { text: "IF foundAt == NULL THEN (見つからず)", step: 7 }
         ],
         python: [
-            "target = 2 # 探したい数字",
-            "found_at = -1",
-            "for k in range(0, len(hairetsu)):",
-            "    if hairetsu[k] == target:",
-            "        found_at = k",
-            "        break",
-            "print(f'Found at: {found_at}')"
+            { text: "target = 2 # 探したい数字", step: 1 },
+            { text: "found_at = -1", step: 1 },
+            { text: "for k in range(0, len(hairetsu)):", step: 2 },
+            { text: "    if hairetsu[k] == target:", step: 2 },
+            { text: "        found_at = k", step: 4 },
+            { text: "        break", step: 4 },
+            { text: "print(f'Found at: {found_at}')", step: 7 }
         ]
     },
     binary: {
         macro: [
-            "SET k_low = 1, k_high = 13",
-            "WHILE k_low <= k_high",
-            "  SET k_mid = (k_low + k_high) / 2",
-            "  IF hairetsu[k_mid] == target THEN",
-            "    SET foundAt = k_mid : EXIT WHILE",
-            "  ELSE IF hairetsu[k_mid] < target THEN",
-            "    SET k_low = k_mid + 1",
-            "  ELSE",
-            "    SET k_high = k_mid - 1",
-            "  END IF",
-            "WEND"
+            { text: "SET k_low = 1, k_high = 13", step: 1 },
+            { text: "WHILE k_low <= k_high", step: 3 },
+            { text: "  SET k_mid = (k_low + k_high) / 2", step: 3 },
+            { text: "  IF hairetsu[k_mid] == target THEN", step: 5 },
+            { text: "    SET foundAt = k_mid : EXIT WHILE", step: 5 },
+            { text: "  ELSE IF hairetsu[k_mid] < target THEN", step: 6 },
+            { text: "    SET k_low = k_mid + 1", step: 7 },
+            { text: "  ELSE", step: 8 },
+            { text: "    SET k_high = k_mid - 1", step: 9 },
+            { text: "  END IF", step: 3 },
+            { text: "WEND", step: 3 },
+            { text: "IF k_low > k_high THEN (見つからず)", step: 11 }
         ],
         python: [
-            "low, high = 0, len(hairetsu) - 1",
-            "found_at = -1",
-            "while low <= high:",
-            "    mid = (low + high) // 2",
-            "    if hairetsu[mid] == target:",
-            "        found_at = mid",
-            "        break",
-            "    elif hairetsu[mid] < target:",
-            "        low = mid + 1",
-            "    else:",
-            "        high = mid - 1",
-            "print(f'Found at: {found_at}')"
+            { text: "low, high = 0, len(hairetsu) - 1", step: 1 },
+            { text: "found_at = -1", step: 1 },
+            { text: "while low <= high:", step: 3 },
+            { text: "    mid = (low + high) // 2", step: 3 },
+            { text: "    if hairetsu[mid] == target:", step: 5 },
+            { text: "        found_at = mid", step: 5 },
+            { text: "        break", step: 5 },
+            { text: "    elif hairetsu[mid] < target:", step: 6 },
+            { text: "        low = mid + 1", step: 7 },
+            { text: "    else:", step: 8 },
+            { text: "        high = mid - 1", step: 9 },
+            { text: "print(f'Found at: {found_at}')", step: 11 }
         ]
     },
     minmax: {
         macro: [
-            "SET Max = hairetsu[1], Min = hairetsu[1]",
-            "FOR k = 2 TO 13",
-            "  IF hairetsu[k] > Max THEN",
-            "    SET Max = hairetsu[k]",
-            "  ELSE IF hairetsu[k] < Min THEN",
-            "    SET Min = hairetsu[k]",
-            "  END IF",
-            "NEXT k"
+            { text: "SET Max = hairetsu[1], Min = hairetsu[1]", step: 1 },
+            { text: "FOR k = 2 TO 13", step: 2 },
+            { text: "  IF hairetsu[k] > Max THEN", step: 3 },
+            { text: "    SET Max = hairetsu[k]", step: 4 },
+            { text: "  ELSE IF hairetsu[k] < Min THEN", step: 5 },
+            { text: "    SET Min = hairetsu[k]", step: 6 },
+            { text: "  END IF", step: 2 },
+            { text: "NEXT k", step: 2 }
         ],
         python: [
-            "max_val = hairetsu[0]",
-            "min_val = hairetsu[0]",
-            "for k in range(1, len(hairetsu)):",
-            "    if hairetsu[k] > max_val:",
-            "        max_val = hairetsu[k]",
-            "    elif hairetsu[k] < min_val:",
-            "        min_val = hairetsu[k]",
-            "print(f'Max: {max_val}, Min: {min_val}')"
+            { text: "max_val = hairetsu[0]", step: 1 },
+            { text: "min_val = hairetsu[0]", step: 1 },
+            { text: "for k in range(1, len(hairetsu)):", step: 2 },
+            { text: "    if hairetsu[k] > max_val:", step: 3 },
+            { text: "        max_val = hairetsu[k]", step: 4 },
+            { text: "    elif hairetsu[k] < min_val:", step: 5 },
+            { text: "        min_val = hairetsu[k]", step: 6 },
+            { text: "print(f'Max: {max_val}, Min: {min_val}')", step: 1 }
         ]
     },
     bubble: {
         macro: [
-            "FOR i = 1 TO 12",
-            "  FOR j = 1 TO 13 - i",
-            "    IF hairetsu[j] > hairetsu[j + 1] THEN",
-            "      SWAP hairetsu[j], hairetsu[j + 1]",
-            "    END IF",
-            "  NEXT j",
-            "NEXT i"
+            { text: "FOR i = 1 TO 12", step: 1 },
+            { text: "  FOR j = 1 TO 13 - i", step: 3 },
+            { text: "    IF hairetsu[j] > hairetsu[j + 1] THEN", step: 3 },
+            { text: "      SWAP hairetsu[j], hairetsu[j + 1]", step: 4 },
+            { text: "    END IF", step: 3 },
+            { text: "  NEXT j", step: 3 },
+            { text: "NEXT i", step: 1 }
         ],
         python: [
-            "n = len(hairetsu)",
-            "for i in range(n):",
-            "    for j in range(0, n - i - 1):",
-            "        if hairetsu[j] > hairetsu[j + 1]:",
-            "            hairetsu[j], hairetsu[j + 1] = \\",
-            "                hairetsu[j + 1], hairetsu[j]",
-            "print('Sorted list:', hairetsu)"
+            { text: "n = len(hairetsu)", step: 1 },
+            { text: "for i in range(n):", step: 1 },
+            { text: "    swapped = False", step: 1 },
+            { text: "    for j in range(0, n - i - 1):", step: 3 },
+            { text: "        if hairetsu[j] > hairetsu[j + 1]:", step: 3 },
+            { text: "            hairetsu[j], hairetsu[j + 1] = \\", step: 4 },
+            { text: "                hairetsu[j + 1], hairetsu[j]", step: 4 },
+            { text: "            swapped = True", step: 4 },
+            { text: "    if not swapped: break", step: 1 },
+            { text: "print('Sorted list:', hairetsu)", step: 1 }
         ]
     },
     selection: {
         macro: [
-            "FOR k = 1 TO 12",
-            "  SET minIndex = k",
-            "  FOR j = k + 1 TO 13",
-            "    IF hairetsu[j] < hairetsu[minIndex] THEN",
-            "      SET minIndex = j",
-            "    END IF",
-            "  NEXT j",
-            "  SWAP hairetsu[k], hairetsu[minIndex]",
-            "NEXT k"
+            { text: "FOR k = 1 TO 12", step: 1 },
+            { text: "  SET minIndex = k", step: 2 },
+            { text: "  FOR j = k + 1 TO 13", step: 4 },
+            { text: "    IF hairetsu[j] < hairetsu[minIndex] THEN", step: 4 },
+            { text: "      SET minIndex = j", step: 5 },
+            { text: "    END IF", step: 4 },
+            { text: "  NEXT j", step: 4 },
+            { text: "  SWAP hairetsu[k], hairetsu[minIndex]", step: 8 },
+            { text: "NEXT k", step: 9 }
         ],
         python: [
-            "n = len(hairetsu)",
-            "for k in range(n):",
-            "    min_idx = k",
-            "    for j in range(k + 1, n):",
-            "        if hairetsu[j] < hairetsu[min_idx]:",
-            "            min_idx = j",
-            "    hairetsu[k], hairetsu[min_idx] = \\",
-            "        hairetsu[min_idx], hairetsu[k]",
-            "print('Sorted list:', hairetsu)"
+            { text: "n = len(hairetsu)", step: 1 },
+            { text: "for k in range(n):", step: 1 },
+            { text: "    min_idx = k", step: 2 },
+            { text: "    for j in range(k + 1, n):", step: 4 },
+            { text: "        if hairetsu[j] < hairetsu[min_idx]:", step: 4 },
+            { text: "            min_idx = j", step: 5 },
+            { text: "    if min_idx != k:", step: 8 },
+            { text: "        hairetsu[k], hairetsu[min_idx] = \\", step: 8 },
+            { text: "            hairetsu[min_idx], hairetsu[k]", step: 8 },
+            { text: "print('Sorted list:', hairetsu)", step: 9 }
         ]
     },
     insertion: {
         macro: [
-            "FOR k = 2 TO 13",
-            "  SET hozon = hairetsu[k]",
-            "  SET j = k - 1",
-            "  WHILE j >= 1 AND hairetsu[j] > hozon",
-            "    SET hairetsu[j + 1] = hairetsu[j]",
-            "    SET j = j - 1",
-            "  WEND",
-            "  SET hairetsu[j + 1] = hozon",
-            "NEXT k"
+            { text: "FOR k = 2 TO 13", step: 1 },
+            { text: "  SET hozon = hairetsu[k]", step: 2 },
+            { text: "  SET j = k - 1", step: 2 },
+            { text: "  WHILE j >= 1 AND hairetsu[j] > hozon", step: 4 },
+            { text: "    SET hairetsu[j + 1] = hairetsu[j]", step: 5 },
+            { text: "    SET j = j - 1", step: 5 },
+            { text: "  WEND", step: 4 },
+            { text: "  SET hairetsu[j + 1] = hozon", step: 9 },
+            { text: "NEXT k", step: 10 }
         ],
         python: [
-            "for k in range(1, len(hairetsu)):",
-            "    hozon = hairetsu[k]",
-            "    j = k - 1",
-            "    while j >= 0 and hairetsu[j] > hozon:",
-            "        hairetsu[j + 1] = hairetsu[j]",
-            "        j -= 1",
-            "    hairetsu[j + 1] = hozon",
-            "print('Sorted list:', hairetsu)"
+            { text: "for k in range(1, len(hairetsu)):", step: 1 },
+            { text: "    hozon = hairetsu[k]", step: 2 },
+            { text: "    j = k - 1", step: 2 },
+            { text: "    while j >= 0 and hairetsu[j] > hozon:", step: 4 },
+            { text: "        hairetsu[j + 1] = hairetsu[j]", step: 5 },
+            { text: "        j -= 1", step: 5 },
+            { text: "    hairetsu[j + 1] = hozon", step: 9 },
+            { text: "print('Sorted list:', hairetsu)", step: 10 }
         ]
     },
     manual: {
         macro: [
-            "== マニュアル操作 (Manual) ==",
-            "自由自在にカードを操作してみよう！",
-            "・ドラッグで「hairetsu[]」や「各スロット」へコピー",
-            "・「元に戻す (Undo)」で操作を巻き戻し",
-            "・変数ボックスに好きな数字を入れてシミュレーション！"
+            { text: "== マニュアル操作 (Manual) ==", step: null },
+            { text: "自由自在にカードを操作してみよう！", step: null },
+            { text: "・ドラッグで「hairetsu[]」や「各スロット」へコピー", step: null },
+            { text: "・「元に戻す (Undo)」で操作を巻き戻し", step: null },
+            { text: "・変数ボックスに好きな数字を入れてシミュレーション！", step: null }
         ],
         python: [
-            "# Manual Mode",
-            "# Drag and drop cards to simulate algorithms.",
-            "# Use 'Undo' to step back.",
-            "# Change variables in the boxes above."
+            { text: "# Manual Mode", step: null },
+            { text: "# Drag and drop cards to simulate algorithms.", step: null },
+            { text: "# Use 'Undo' to step back.", step: null },
+            { text: "# Change variables in the boxes above.", step: null }
         ]
     }
 };
