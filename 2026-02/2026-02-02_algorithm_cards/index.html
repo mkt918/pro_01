@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Algorithm Cards</title>
+  <title>アルゴリズムの解説</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -153,6 +153,75 @@
       </div>
     </div>
   </div>
+
+  <!-- Tutorial Modal -->
+  <div id="tutorial-modal"
+    class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="glass-panel max-w-2xl w-full mx-4 p-8 relative animate-fade-in">
+      <button id="close-tutorial" class="absolute top-4 right-4 text-white/60 hover:text-white text-2xl leading-none">
+        ×
+      </button>
+
+      <h2 class="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+        アルゴリズムの解説へようこそ！
+      </h2>
+
+      <div class="text-white/90 space-y-4">
+        <p class="text-lg">
+          このアプリケーションでは、トランプカードを使ってアルゴリズムの動作を視覚的に学習できます。
+        </p>
+
+        <div class="bg-white/5 rounded-lg p-4 space-y-3">
+          <h3 class="font-semibold text-primary text-lg">📖 基本的な使い方</h3>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">▶</span>
+              <span><strong>アルゴリズムを選択</strong>: ドロップダウンから実行したいアルゴリズムを選びます</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">▶</span>
+              <span><strong>ターゲット値を設定</strong>: 探索アルゴリズムの場合、探したい値を入力します</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">▶</span>
+              <span><strong>実行開始</strong>: ▶️ ボタンで自動再生、⏭️/⏮️ でステップ送り/戻し</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">▶</span>
+              <span><strong>コードを確認</strong>: Macro/Python タブを切り替えて、異なる言語での実装を確認</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary mt-1">▶</span>
+              <span><strong>手動モード</strong>: カードをドラッグ&ドロップして自由に操作できます</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-white/5 rounded-lg p-4 space-y-2">
+          <h3 class="font-semibold text-secondary text-lg">💡 ポイント</h3>
+          <ul class="space-y-1 text-sm">
+            <li>• 各ステップで<strong>コードの該当行が強調表示</strong>されます</li>
+            <li>• <strong>変数の状態</strong>がリアルタイムで表示されます</li>
+            <li>• <strong>速度調整</strong>で自分のペースで学習できます</li>
+          </ul>
+        </div>
+
+        <div class="flex items-center gap-3 pt-4 border-t border-white/10">
+          <input type="checkbox" id="dont-show-again"
+            class="w-4 h-4 rounded border-white/20 bg-white/10 text-primary focus:ring-2 focus:ring-primary">
+          <label for="dont-show-again" class="text-sm text-white/70 cursor-pointer">
+            次回以降このメッセージを表示しない
+          </label>
+        </div>
+
+        <button id="start-learning"
+          class="w-full mt-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+          学習を始める
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="./main.js"></script>
 </body>
 

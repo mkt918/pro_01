@@ -1,4 +1,30 @@
 console.log('Algorithm Cards App Starting...');
+
+// Tutorial Control
+const TUTORIAL_KEY = 'algorithm-tutorial-shown';
+
+function shouldShowTutorial() {
+    return !localStorage.getItem(TUTORIAL_KEY);
+}
+
+function markTutorialAsShown() {
+    localStorage.setItem(TUTORIAL_KEY, 'true');
+}
+
+function showTutorialModal() {
+    const modal = document.getElementById('tutorial-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function hideTutorialModal() {
+    const modal = document.getElementById('tutorial-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
 import './style.css'
 import { Deck } from './Deck.js';
 import { Visualizer } from './Visualizer.js';
@@ -369,3 +395,31 @@ renderCodeTemplate('manual');
 
 // Initialize Container Visibility
 updateContainerVisibility('manual');
+
+// Tutorial Modal Event Listeners
+const closeTutorialBtn = document.getElementById('close-tutorial');
+const startLearningBtn = document.getElementById('start-learning');
+const dontShowAgainCheckbox = document.getElementById('dont-show-again');
+
+if (closeTutorialBtn) {
+    closeTutorialBtn.addEventListener('click', () => {
+        hideTutorialModal();
+    });
+}
+
+if (startLearningBtn) {
+    startLearningBtn.addEventListener('click', () => {
+        if (dontShowAgainCheckbox && dontShowAgainCheckbox.checked) {
+            markTutorialAsShown();
+        }
+        hideTutorialModal();
+    });
+}
+
+// Show tutorial on first visit
+if (shouldShowTutorial()) {
+    // Delay slightly to ensure DOM is fully loaded
+    setTimeout(() => {
+        showTutorialModal();
+    }, 500);
+}
