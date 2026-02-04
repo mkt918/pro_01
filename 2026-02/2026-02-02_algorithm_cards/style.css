@@ -73,7 +73,7 @@
 
 /* Custom code highlighting */
 .code-line {
-  @apply px-2 py-1 rounded;
+  @apply px-2 py-1 rounded whitespace-pre-wrap;
 }
 
 .code-line.active {
