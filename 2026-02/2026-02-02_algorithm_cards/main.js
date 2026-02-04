@@ -36,10 +36,15 @@ import { selectionSort } from './algorithms/selectionSort.js';
 import { insertionSort } from './algorithms/insertionSort.js';
 import { codeTemplates } from './codeTemplates.js';
 
-// Constants
-const CARD_COUNT = 13;
+// --- Constants ---
+const DEFAULT_CARD_COUNT = 13;
+const FIRST_CARD_INDEX = 1; // logical start for algorithms that skip dummy
+const DEFAULT_TARGET_VALUE = 2;
 
-// Container visibility mapping for each algorithm
+/**
+ * アルゴリズムごとのコンテナ表示フラグ
+ * @type {Object.<string, string[]>}
+ */
 const CONTAINER_VISIBILITY = {
     manual: ['hozon', 'found', 'target', 'max', 'min'],
     linear: ['found', 'target'],
@@ -50,12 +55,17 @@ const CONTAINER_VISIBILITY = {
     insertion: ['hozon']
 };
 
-// State
-let isManualMode = true;
-let currentLanguage = 'macro'; // 'macro' or 'python'
-
-// Initialization
-const deck = new Deck();
+/**
+ * アプリケーションのグローバル状態管理オブジェクト
+ */
+const AppState = {
+    isManualMode: true,
+    currentLanguage: 'macro', // 'macro' or 'python'
+    cardCount: DEFAULT_CARD_COUNT,
+    targetValue: DEFAULT_TARGET_VALUE,
+    deck: new Deck(),
+    visualizer: null // initialized later
+};
 
 // UI Elements
 const msgText = document.getElementById('msg-text');
@@ -63,7 +73,7 @@ const varMonitor = document.getElementById('variable-monitor');
 const codeView = document.getElementById('code-view');
 
 // Visualizer Setup
-const visualizer = new Visualizer(deck, {
+AppState.visualizer = new Visualizer(AppState.deck, {
     onUpdate: ({ message, variables, codeLine }) => {
         if (message) msgText.textContent = message;
         if (variables) {
@@ -84,15 +94,13 @@ const visualizer = new Visualizer(deck, {
             if (elK) elK.textContent = valK;
             if (elI) elI.textContent = valI;
         }
-
-        // Highlight Code Line logic moved to highlightCode callback
     },
     onFinished: () => {
         msgText.textContent += " (完了)";
     },
     highlightCode: (stepId, type) => {
+        const lines = codeView.querySelectorAll('.code-line');
         if (stepId !== undefined && stepId !== null) {
-            const lines = codeView.querySelectorAll('.code-line');
             lines.forEach(el => {
                 el.classList.remove('active', 'compare', 'swap');
                 if (el.dataset.step == stepId) {
@@ -109,7 +117,6 @@ const visualizer = new Visualizer(deck, {
                 activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         } else {
-            const lines = codeView.querySelectorAll('.code-line');
             lines.forEach(el => {
                 el.classList.remove('active', 'compare', 'swap');
             });
@@ -118,38 +125,41 @@ const visualizer = new Visualizer(deck, {
 });
 
 // Initial Render
-deck.generateSpades(CARD_COUNT);
-deck.render(); // No argument needed as it targets #aaa-container internally logic update
+AppState.deck.generateSpades(AppState.cardCount);
+AppState.deck.render();
 renderCodeTemplate('linear');
 
 // Event Listeners
+// アルゴリズム選択時のイベント
 document.getElementById('algo-select').addEventListener('change', (e) => {
     const selected = e.target.value;
 
-    // Always reset visualizer state first
-    visualizer.reset();
+    // アルゴリズムの状態をリセット
+    AppState.visualizer.reset();
 
-    // Handle Manual Mode vs Algorithms
+    // モード（手動 vs 自動）に応じてUIを切り替え
     if (selected === 'manual') {
         enableManualModeUI();
     } else {
         if (selected === 'binary') {
-            document.getElementById('target-value').value = 2;
+            document.getElementById('target-value').value = 2; // 二分探索の初期値
         }
-        disableManualModeUI(); // Switch to auto mode UI
+        disableManualModeUI();
         renderCodeTemplate(selected);
-        reset(); // Re-run reset logic for algorithm setup
-        // But wait, reset() calls generateSpades and render...
-        // Let's optimize. reset() handles general setup.
+        reset();
     }
 
     updateContainerVisibility(selected);
     updateUIControls();
 });
 
+/**
+ * 手動モードのUIを有効にします。
+ * ドラッグ＆ドロップを許可し、自動実行ボタンを無効化します。
+ */
 function enableManualModeUI() {
-    isManualMode = true;
-    deck.enableManualMode();
+    AppState.isManualMode = true;
+    AppState.deck.enableManualMode();
 
     // Disable alg controls EXCEPT Undo (Back)
     document.getElementById('btn-play-pause').disabled = true;
@@ -164,9 +174,12 @@ function enableManualModeUI() {
     renderCodeTemplate('manual');
 }
 
+/**
+ * 自動モード（アルゴリズム実行モード）のUIを有効にします。
+ */
 function disableManualModeUI() {
-    isManualMode = false;
-    deck.disableManualMode();
+    AppState.isManualMode = false;
+    AppState.deck.disableManualMode();
 
     // Enable alg controls
     document.getElementById('btn-play-pause').disabled = false;
@@ -181,9 +194,12 @@ document.getElementById('target-value').addEventListener('change', () => {
 });
 
 document.getElementById('skin-select').addEventListener('change', (e) => {
-    deck.setSkin(e.target.value);
+    AppState.deck.setSkin(e.target.value);
 });
 
+/**
+ * アルゴリズムの選択状態に合わせて、UIコントロール（ターゲット入力など）の表示を更新します。
+ */
 function updateUIControls() {
     const algoName = document.getElementById('algo-select').value;
     const targetInputContainer = document.getElementById('target-input-container');
@@ -194,6 +210,10 @@ function updateUIControls() {
     }
 }
 
+/**
+ * 指定したアルゴリズムに必要なコンテナ（hozon, max, min等）のみを表示し、不要なものを隠します。
+ * @param {string} algoName - アルゴリズム名
+ */
 function updateContainerVisibility(algoName) {
     const containers = ['hozon', 'found', 'target', 'max', 'min'];
     const visibleContainers = CONTAINER_VISIBILITY[algoName] || [];
@@ -215,131 +235,137 @@ document.getElementById('btn-reset').addEventListener('click', () => {
 });
 
 document.getElementById('btn-step-fwd').addEventListener('click', () => {
-    if (visualizer.currentStepIndex === -1) {
+    if (AppState.visualizer.currentStepIndex === -1) {
         initAlgorithm();
     }
-    visualizer.stepForward();
+    AppState.visualizer.stepForward();
 });
 
 document.getElementById('btn-step-back').addEventListener('click', () => {
-    if (isManualMode) {
-        deck.undoManualState();
+    if (AppState.isManualMode) {
+        AppState.deck.undoManualState();
     } else {
-        visualizer.stepBack();
+        AppState.visualizer.stepBack();
     }
 });
 
 document.getElementById('btn-play-pause').addEventListener('click', () => {
-    if (visualizer.currentStepIndex === -1) {
+    if (AppState.visualizer.currentStepIndex === -1) {
         initAlgorithm();
     }
 
-    if (visualizer.isPlaying) {
-        visualizer.pause();
+    if (AppState.visualizer.isPlaying) {
+        AppState.visualizer.pause();
     } else {
-        visualizer.play();
+        AppState.visualizer.play();
     }
 });
 
+/**
+ * 選択されたアルゴリズムを初期化し、実行準備を行います。
+ */
 function initAlgorithm() {
-    const algoName = document.getElementById('algo-select').value;
-    const targetInputContainer = document.getElementById('target-input-container');
-    const targetInput = document.getElementById('target-value');
+    try {
+        const algoName = document.getElementById('algo-select').value;
+        const targetInputContainer = document.getElementById('target-input-container');
+        const targetInput = document.getElementById('target-value');
 
-    // Toggle Target Input Visibility
-    if (algoName === 'linear' || algoName === 'binary') {
-        targetInputContainer.classList.remove('hidden');
-    } else {
-        targetInputContainer.classList.add('hidden');
-    }
+        // Toggle Target Input Visibility
+        if (algoName === 'linear' || algoName === 'binary') {
+            targetInputContainer.classList.remove('hidden');
+        } else {
+            targetInputContainer.classList.add('hidden');
+        }
 
-    // Binary Search requires sorted array
-    if (algoName === 'binary') {
-        // Sort only 1..N
-        const sub = deck.cards.slice(1);
-        sub.sort((a, b) => a.value - b.value);
-        deck.cards = [null, ...sub];
-        deck.render();
-    }
+        // Binary Search requires sorted array
+        if (algoName === 'binary') {
+            const sub = AppState.deck.cards.slice(FIRST_CARD_INDEX);
+            sub.sort((a, b) => a.value - b.value);
+            AppState.deck.cards = [null, ...sub];
+            AppState.deck.render();
+        }
 
-    switch (algoName) {
-        case 'linear':
-            {
-                // User input or defaults
-                let val = parseInt(targetInput.value);
-                if (isNaN(val) || val < 1 || val > 13) val = Math.floor(Math.random() * CARD_COUNT) + 1;
-                targetInput.value = val; // Update UI if corrected
+        switch (algoName) {
+            case 'linear':
+                {
+                    let val = parseInt(targetInput.value);
+                    if (isNaN(val) || val < 1 || val > 13) val = Math.floor(Math.random() * AppState.cardCount) + 1;
+                    targetInput.value = val;
+                    AppState.targetValue = val;
 
-                // Create Target Card Visual
-                deck.setSlots({ target: deck.createCard('spades', val, 999) });
+                    AppState.deck.setSlots({ target: AppState.deck.createCard('spades', val, 999) });
+                    AppState.visualizer.setAlgorithm(linearSearch, val);
+                }
+                break;
+            case 'binary':
+                {
+                    let val = parseInt(targetInput.value);
+                    if (isNaN(val) || val < 1 || val > 13) val = Math.floor(Math.random() * AppState.cardCount) + 1;
+                    targetInput.value = val;
+                    AppState.targetValue = val;
 
-                visualizer.setAlgorithm(linearSearch, val);
-            }
-            break;
-        case 'binary':
-            {
-                // User input or defaults
-                let val = parseInt(targetInput.value);
-                if (isNaN(val) || val < 1 || val > 13) val = Math.floor(Math.random() * CARD_COUNT) + 1;
-                targetInput.value = val;
-
-                // Create Target Card Visual
-                deck.setSlots({ target: deck.createCard('spades', val, 999) });
-
-                // Ensure valid cards exist? Binary search can search for missing values too!
-                // So we don't strictly need the value to exist in the deck.
-
-                visualizer.setAlgorithm(binarySearch, val);
-            }
-            break;
-        case 'minmax':
-            visualizer.setAlgorithm(findMinMax);
-            break;
-        case 'bubble':
-            visualizer.setAlgorithm(bubbleSort);
-            break;
-        case 'selection':
-            visualizer.setAlgorithm(selectionSort);
-            break;
-        case 'insertion':
-            visualizer.setAlgorithm(insertionSort);
-            break;
+                    AppState.deck.setSlots({ target: AppState.deck.createCard('spades', val, 999) });
+                    AppState.visualizer.setAlgorithm(binarySearch, val);
+                }
+                break;
+            case 'minmax':
+                AppState.visualizer.setAlgorithm(findMinMax);
+                break;
+            case 'bubble':
+                AppState.visualizer.setAlgorithm(bubbleSort);
+                break;
+            case 'selection':
+                AppState.visualizer.setAlgorithm(selectionSort);
+                break;
+            case 'insertion':
+                AppState.visualizer.setAlgorithm(insertionSort);
+                break;
+        }
+    } catch (error) {
+        console.error('Algorithm initialization failed:', error);
+        msgText.textContent = "エラーが発生しました: " + error.message;
     }
 }
 
+/**
+ * アプリケーションを初期状態にリセットします。
+ */
 function reset() {
     console.log('Resetting application state...');
-    visualizer.reset();
-    deck.generateSpades(CARD_COUNT);
+    AppState.visualizer.reset();
+    AppState.deck.generateSpades(AppState.cardCount);
 
     const algoName = document.getElementById('algo-select').value;
     if (algoName === 'binary') {
-        const sub = deck.cards.slice(1);
+        const sub = AppState.deck.cards.slice(FIRST_CARD_INDEX);
         sub.sort((a, b) => a.value - b.value);
-        deck.cards = [null, ...sub];
+        AppState.deck.cards = [null, ...sub];
     }
 
-    deck.render();
+    AppState.deck.render();
     msgText.textContent = "リセットしました。";
     varMonitor.textContent = "";
 
     const lines = codeView.querySelectorAll('.code-line');
-    lines.forEach(el => el.classList.remove('active'));
+    lines.forEach(el => el.classList.remove('active', 'compare', 'swap'));
 
     updateContainerVisibility(algoName);
     updateUIControls();
-    // Also clear Target slot
-    deck.setSlots({ target: null });
+    AppState.deck.setSlots({ target: null });
 }
 
 
+/**
+ * 指定したアルゴリズムのコードテンプレートを指定言語で描画します。
+ * @param {string} algoName - アルゴリズム名
+ */
 function renderCodeTemplate(algoName) {
     const templates = codeTemplates[algoName];
     if (!templates) {
         codeView.innerHTML = '<div class="code-line">コードがありません</div>';
         return;
     }
-    const lines = templates[currentLanguage] || templates['macro'] || ["コードがありません"];
+    const lines = templates[AppState.currentLanguage] || templates['macro'] || ["コードがありません"];
     codeView.innerHTML = lines.map(line => {
         const text = typeof line === 'string' ? line : line.text;
         const step = (line.step !== undefined && line.step !== null) ? ` data-step="${line.step}"` : '';
@@ -351,8 +377,11 @@ function renderCodeTemplate(algoName) {
 const tabMacro = document.getElementById('tab-macro');
 const tabPython = document.getElementById('tab-python');
 
+/**
+ * タブのUI表示（アクティブ状態）を選択中の言語に合わせて更新します。
+ */
 function updateTabsUI() {
-    if (currentLanguage === 'macro') {
+    if (AppState.currentLanguage === 'macro') {
         tabMacro.className = "flex-1 rounded-t-lg font-bold transition-all bg-primary text-white shadow-lg border-b-2 border-primary";
         tabPython.className = "flex-1 rounded-t-lg font-bold transition-all bg-white/5 text-white/50 hover:bg-white/10 shadow-lg border-b-2 border-transparent";
     } else {
@@ -361,31 +390,36 @@ function updateTabsUI() {
     }
 }
 
-tabMacro.addEventListener('click', () => {
-    currentLanguage = 'macro';
+/**
+ * 表示言語を切り替え、UIとコード表示を更新します。
+ * @param {string} lang - 切り替え後の言語 ('macro' | 'python')
+ */
+function changeLanguage(lang) {
+    AppState.currentLanguage = lang;
     updateTabsUI();
     const algoName = document.getElementById('algo-select').value;
     renderCodeTemplate(algoName);
-    if (visualizer.currentStepIndex >= 0) {
-        const step = visualizer.steps[visualizer.currentStepIndex];
-        visualizer.highlightCode(step.codeLine, step.type);
-    }
-});
+    rehighlightCurrentStep();
+}
 
-tabPython.addEventListener('click', () => {
-    currentLanguage = 'python';
-    updateTabsUI();
-    const algoName = document.getElementById('algo-select').value;
-    renderCodeTemplate(algoName);
-    if (visualizer.currentStepIndex >= 0) {
-        const step = visualizer.steps[visualizer.currentStepIndex];
-        visualizer.highlightCode(step.codeLine, step.type);
+/**
+ * 現在の実行ステップをコードビュー上で再強調表示します（言語切り替え時などに使用）。
+ */
+function rehighlightCurrentStep() {
+    if (AppState.visualizer.currentStepIndex >= 0) {
+        const step = AppState.visualizer.steps[AppState.visualizer.currentStepIndex];
+        if (step && step.codeLine !== undefined) {
+            AppState.visualizer.highlightCode(step.codeLine, step.type);
+        }
     }
-});
+}
+
+tabMacro.addEventListener('click', () => changeLanguage('macro'));
+tabPython.addEventListener('click', () => changeLanguage('python'));
 
 // Initialize Deck
-deck.generateSpades(CARD_COUNT);
-deck.render();
+AppState.deck.generateSpades(AppState.cardCount);
+AppState.deck.render();
 
 // Enable Manual UI
 enableManualModeUI();
