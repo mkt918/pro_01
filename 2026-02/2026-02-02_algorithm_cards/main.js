@@ -13,6 +13,10 @@ import { codeTemplates } from './codeTemplates.js';
 // Constants
 const CARD_COUNT = 13;
 
+// State
+let isManualMode = true;
+let currentLanguage = 'macro'; // 'macro' or 'python'
+
 // Initialization
 const deck = new Deck();
 
@@ -266,8 +270,6 @@ function reset() {
     deck.setSlots({ target: null });
 }
 
-let isManualMode = true; // Default start
-let currentLanguage = 'macro'; // 'macro' or 'python'
 
 function renderCodeTemplate(algoName) {
     const templates = codeTemplates[algoName];
