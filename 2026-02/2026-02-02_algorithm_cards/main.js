@@ -13,6 +13,17 @@ import { codeTemplates } from './codeTemplates.js';
 // Constants
 const CARD_COUNT = 13;
 
+// Container visibility mapping for each algorithm
+const CONTAINER_VISIBILITY = {
+    manual: ['hozon', 'found', 'target', 'max', 'min'],
+    linear: ['found', 'target'],
+    binary: ['found', 'target'],
+    minmax: ['max', 'min'],
+    bubble: [],
+    selection: [],
+    insertion: ['hozon']
+};
+
 // State
 let isManualMode = true;
 let currentLanguage = 'macro'; // 'macro' or 'python'
@@ -106,6 +117,7 @@ document.getElementById('algo-select').addEventListener('change', (e) => {
         // Let's optimize. reset() handles general setup.
     }
 
+    updateContainerVisibility(selected);
     updateUIControls();
 });
 
@@ -154,6 +166,22 @@ function updateUIControls() {
     } else {
         targetInputContainer.classList.add('hidden');
     }
+}
+
+function updateContainerVisibility(algoName) {
+    const containers = ['hozon', 'found', 'target', 'max', 'min'];
+    const visibleContainers = CONTAINER_VISIBILITY[algoName] || [];
+
+    containers.forEach(name => {
+        const container = document.querySelector(`.${name}-container`);
+        if (container) {
+            if (visibleContainers.includes(name)) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+    });
 }
 
 document.getElementById('btn-reset').addEventListener('click', () => {
@@ -272,6 +300,7 @@ function reset() {
     const lines = codeView.querySelectorAll('.code-line');
     lines.forEach(el => el.classList.remove('active'));
 
+    updateContainerVisibility(algoName);
     updateUIControls();
     // Also clear Target slot
     deck.setSlots({ target: null });
@@ -337,3 +366,6 @@ enableManualModeUI();
 
 // Render Initial Template
 renderCodeTemplate('manual');
+
+// Initialize Container Visibility
+updateContainerVisibility('manual');
